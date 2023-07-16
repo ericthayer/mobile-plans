@@ -4,15 +4,15 @@
       <slot name="icon"></slot>
     </i>
     <div class="details">
-      <h3>
+      <h2 class="title kite-type-style--title-6">
         <slot name="heading"></slot>
-      </h3>
+      </h2>
       <slot></slot>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .item {
   margin-top: 2rem;
   display: flex;
@@ -22,38 +22,35 @@
 .details {
   flex: 1;
   margin-left: 1rem;
+
+  .title {
+    margin-bottom: 0.5rem;
+  }
 }
 
 i {
+  background: var(--kite-color-gray-10);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--kite-color-gray-30);
   display: flex;
-  place-items: center;
-  place-content: center;
-  width: 32px;
   height: 32px;
-
-  color: var(--color-text);
+  place-content: center;
+  place-items: center;
+  width: 32px;
 }
 
-h3 {
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 0.4rem;
-  color: var(--color-heading);
-}
 
-@media (min-width: 1024px) {
+@container (min-width: 996px) {
   .item {
     margin-top: 0;
-    padding: 0.4rem 0 1rem calc(var(--section-gap) / 2);
+    padding: 1rem 0 1rem calc(var(--section-gap) / 2);
   }
 
   i {
     top: calc(50% - 25px);
     left: -26px;
     position: absolute;
-    border: 1px solid var(--color-border);
-    background: var(--color-background);
-    border-radius: 8px;
     width: 50px;
     height: 50px;
   }
