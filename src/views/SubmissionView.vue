@@ -1,15 +1,34 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-    <p>Time to get started</p>
-  </div>
+  <MobilePlanForm title="Mobile Plans" />
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    align-items: center;
-    display: flex;
-  }
-}
+<script lang="ts">
+import { defineComponent, computed } from 'vue'
+import MobilePlanForm from '../components/forms/MobilePlanForm.vue'
+
+export default defineComponent({
+  name: 'SubmissionView',
+  components: {
+    MobilePlanForm
+  },
+  data() {
+    return {
+
+    }
+  },
+  setup() {
+    // const platformStore = usePlatformStore()
+    return {
+    }
+  },
+  computed: {
+
+  },
+  methods: {
+
+  },
+})
+</script>
+
+<style lang="scss">
 </style>
