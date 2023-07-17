@@ -1,24 +1,25 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import Introduction from './components/Introduction.vue'
-</script>
-
 <template>
   <div class="container">
-    <header class="app-header">
+    <header class="app-header" role="banner">
       <div class="wrapper">
-        <img alt="Vue logo" class="logo" src="@/assets/images/logo.svg" />
+        <img alt="Mobile Plans logo" class="logo" src="@/assets/images/logo.svg" />
         <Introduction msg="Mobile Plans" />
-        <nav class="main-menu">
-          <RouterLink to="/" class="nav-item">Home</RouterLink>
+        <nav class="main-menu" role="navigation">
+          <RouterLink to="/" class="nav-item">Docs</RouterLink>
           <RouterLink to="/submission" class="nav-item">Submission</RouterLink>
         </nav>
       </div>
     </header>
-
-    <RouterView />
+    <main id="main" class="main" role="main">
+      <RouterView />
+    </main>
   </div>
 </template>
+
+<script setup lang="ts">
+import { RouterLink, RouterView } from 'vue-router'
+import Introduction from './components/text/Introduction.vue'
+</script>
 
 <style lang="scss">
 .app {
@@ -29,6 +30,10 @@ import Introduction from './components/Introduction.vue'
 .app-header {
   line-height: 1.5;
   margin-bottom: 2rem;
+}
+
+.main {
+  place-self: stretch;
 }
 
 .logo {
