@@ -1,19 +1,19 @@
-<script setup lang="ts">
-defineProps<{
-  msg: string
-}>()
-</script>
-
 <template>
   <div class="intro">
     <h1 class="kite-type-style--title-2">{{ msg }}</h1>
     <h2 class="kite-type-style--body-display">
       Technical interview submission of <a href="https://ethayer.design/">Eric Thayer</a>.
       <br/>      
-      Please <a href="mailto:ethayer.design@gmail" target="_blank" rel="noopener">email</a> me if you have any questions or comments.
+      Please <a href="mailto:ethayer.design@gmail" target="_blank" rel="noopener">contact</a> me with any questions or comments.
     </h2>
   </div>
 </template>
+
+<script setup lang="ts">
+defineProps<{
+  msg: string
+}>()
+</script>
 
 <style scoped>
 
