@@ -1,3 +1,4 @@
+import './assets/styles/tailwind.css'
 import './assets/styles/kite.css'
 import './assets/styles/main.css'
 
