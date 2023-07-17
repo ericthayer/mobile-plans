@@ -6,11 +6,11 @@
       <fieldset>
         <div class="flex place-content-between">
           <legend v-if="!editPlanName" class="plan-title w-auto" @click="toggleEditPlanName()">
-            {{ planName }}
+            {{ this.mobilePlan.name }}
           </legend>
           <input
             v-else
-            v-model="planName"
+            v-model="this.mobilePlan.name"
             class=""
             title="plan name"
             type="text"
@@ -168,7 +168,7 @@ export default {
       return this.mobilePlan.name
     },
     setDefaultPlanOption() {
-      return this.planOptions.filter((option) => option.name == 'Basic') ? true : false
+      // return this.planOptions.filter((option: {name: string}) => option.name == 'Basic') ? true : false
     }
   },
   methods: {
@@ -185,7 +185,7 @@ export default {
     }
   },
   watch: {
-    
+
   }
 }
 </script>
