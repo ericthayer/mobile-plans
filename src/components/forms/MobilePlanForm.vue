@@ -6,11 +6,11 @@
       <fieldset>
         <div class="flex place-content-between">
           <legend v-if="!editPlanName" class="plan-title w-auto" @click="toggleEditPlanName()">
-            {{ this.mobilePlan.name }}
+            {{ planName }}
           </legend>
           <input
             v-else
-            v-model="this.mobilePlan.name"
+            v-model="planName"
             class=""
             title="plan name"
             type="text"
@@ -158,11 +158,14 @@ export default {
     }
   },
   computed: {
-    planPrice(): Number {
+    planPrice() {
       // const updatedPlans = this.mobilePlans.filter((plan) => {
       //   plan.editing === true
       // })
       return (this.mobilePlan.price).toFixed(2)
+    },
+    planName() {
+      return this.mobilePlan.name
     },
     setDefaultPlanOption() {
       return this.planOptions.filter((option) => option.name == 'Basic') ? true : false
@@ -172,7 +175,7 @@ export default {
     toggleEditPlanName() {
       this.editPlanName = !this.editPlanName
     },
-    addPlanOptionCost(optionPlan: {name: string, cost: Number}) {
+    addPlanOptionCost(optionPlan: {name: string, cost: number}) {
       // const updatedPlans = this.mobilePlans.filter((plan) => {
       //   plan.editing === true
       // })
