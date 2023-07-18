@@ -1,5 +1,5 @@
 <template>
-  <MobilePlanForm title="Mobile Plans" />
+  <MobilePlanForm title="Mobile Plans" @onChange="setDeviceManufacturer" />
 </template>
 
 <script lang="ts">
@@ -25,7 +25,9 @@ export default defineComponent({
 
   },
   methods: {
-
+    setDeviceManufacturer(deviceManufacturer: string) {
+      console.log("deviceManufacturer", deviceManufacturer)
+    }
   },
 })
 </script>
