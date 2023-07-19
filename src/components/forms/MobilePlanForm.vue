@@ -90,7 +90,7 @@
                       name="device-manufacturer"
                       id="device-manufacturer"
                       required
-                      @input="setDeviceManufacturer($event)"
+                      @input="setDeviceManufacturer(this.deviceManufacturerSelected)"
                     >
                       <option
                         v-for="manufacturer in getDeviceManufacturers"
@@ -113,7 +113,7 @@
                       id="device-models"
                       aria-labelledby="device-models-label"
                       required
-                      @input="setDeviceModel($event)"
+                      @input="setDeviceModel(this.deviceModelSelected)"
                     >
                       <option
                         v-for="device in getDeviceModelsByManufacturer"
@@ -173,7 +173,7 @@
                     <div class="flex">
                       <input
                         id="installment-plan"
-                        name="installment-plan"
+                        name="payment-plan"
                         class="mr-1"
                         type="radio"
                         @change=""
@@ -183,7 +183,7 @@
                     <div class="flex">
                       <input
                         id="pay-in-full"
-                        name="pay-in-full"
+                        name="payment-full"
                         class="mr-1"
                         type="radio"
                         @change=""
@@ -200,7 +200,7 @@
                   <div class="flex items-center mr-2">
                     <input
                       id="add-protection-plan"
-                      name="add-protection-plan"
+                      name="protection-plan"
                       class="mr-1"
                       type="radio"
                       @change=""
@@ -210,7 +210,7 @@
                   <div class="flex items-center ml-2">
                     <input
                       id="decline-protection-plan"
-                      name="decline-protection-plan"
+                      name="protection-plan"
                       class="mr-1"
                       type="radio"
                       @change=""
@@ -236,7 +236,7 @@
                     class=""
                     title="Select Carrier"
                     required
-                    @input="setDeviceCarrier($event)"
+                    @input="setDeviceCarrier(this.deviceCarrierSelected)"
                   >
                     <option
                       v-for="carrier in getDeviceCarriers"
@@ -277,14 +277,14 @@
                   :key="question.question"
                   class="flex justify-between mb-2"
                 >
-                  <label class="mb-0" :for="`question-` + index + this.dynamicQuestionLabel">{{
+                  <label class="mb-0 pointer-events-none" :for="`question-` + index + this.dynamicQuestionLabel">{{
                     question.question
                   }}</label>
                   <div class="flex justify-between">
                     <div class="mr-2">
                       <input
                         :id="`question-` + index + `-answer-yes`"
-                        :name="`question-` + index + `-answer-yes`"
+                        :name="`question-` + index"
                         class="mr-1"
                         type="radio"
                         @change="setAnswer(true)"
@@ -296,7 +296,7 @@
                     <div class="ml-4">
                       <input
                         :id="`question-` + index + `-answer-no`"
-                        :name="`question-` + index + `-answer-no`"
+                        :name="`question-` + index"
                         class="mr-1"
                         type="radio"
                         @change="setAnswer(false)"
@@ -328,7 +328,7 @@
           <button class="button-outline">
             <span>Back</span>
           </button>
-          <button class="button-primary ml-2" @click="saveOrder(this.mobilePlan)">
+          <button class="button-primary ml-2" @click="savePlan(this.mobilePlan)">
             <span>Next</span>
           </button>
         </div>
@@ -357,6 +357,7 @@ import { type events } from '../../types'
 export default defineComponent({
   name: 'MobilePlanForm',
   props: ['title'],
+  inheritAttrs: false,
   data(): AppData {
     return {
       editPlanName: false,
@@ -581,7 +582,6 @@ export default defineComponent({
       const plans = this.mobilePlans
 
       if (plans.length === 0) {
-        
         const plan = this.newPlan
 
         this.mobilePlan = plan
@@ -638,8 +638,8 @@ export default defineComponent({
       const updatedPlans = plans.filter((plan: { editing: boolean }) => plan.editing == true)
       updatedPlans[0].price = optionPlan.cost
     },
-    setDeviceManufacturer(manufacturer: { target: { value: string } }): void {
-      const manufacturerName = manufacturer.target.value
+    setDeviceManufacturer(manufacturer: string) {
+      const manufacturerName = manufacturer
       const manufacturers = this.deviceOptions.manufacturers
       const updatedDevices = manufacturers.filter(
         (device: { name: string }) => device.name === manufacturerName
@@ -647,8 +647,8 @@ export default defineComponent({
       // this.mobilePlan.device = updatedDevices
       return updatedDevices
     },
-    setDeviceModel(model: { target: { value: string } }): void {
-      const modelName = model.target.value
+    setDeviceModel(model: string) {
+      const modelName = model
       const updatedDeviceModels = this.deviceModels.filter(
         (device: { name: string }) => device.name === modelName
       )
@@ -664,8 +664,8 @@ export default defineComponent({
       this.dialogMessage =
         'The International Mobile Equipment Identity (IMEI)[1] is a numeric identifier, usually unique,[2][3] for 3GPP and iDEN mobile phones, as well as some satellite phones.'
     },
-    setDeviceCarrier(carrier: { target: { value: string } }) {
-      const carrierName = carrier.target.value
+    setDeviceCarrier(carrier: string) {
+      const carrierName = carrier
       const updatedDeviceCarriers = this.tradeInOptions.carriers.filter(
         (carrier: { name: string }) => carrier.name === carrierName
       )
@@ -684,9 +684,15 @@ export default defineComponent({
       const newPlan = this.newPlan
       newPlan.name = 'Another Line'
       //  TODO: change the last plan's title
-      // const lastPlan = plans.filter((plan: {created: string}) => plan.created > Date.now().toString()) 
+      // const lastPlan = plans.filter((plan: {created: string}) => plan.created > Date.now().toString())
       plans.push(newPlan)
     },
+    clearForm() {
+      console.log('Clear Form')
+    },
+    savePlan(plan: {}) {
+      console.log('Save Plan', plan)
+    }
   },
   watch: {
     deviceManufacturerSelected(manufacturer: string) {

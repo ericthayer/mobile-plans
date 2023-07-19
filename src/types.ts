@@ -212,6 +212,7 @@ export interface AppData {
   deviceModels?: []
 }
 
+
 export interface events {
   setDeviceManufacturer: ($event: {}) => void
   setDeviceModel: ($event: {}) => void
