@@ -1,241 +1,363 @@
 <template>
-  <div>
-    <h2 class="kite-type-style--title-2">{{ title }}</h2>
-    <details v-for="plan in getMobilePlans" :key="plan" :open="plan.editing" class="plan">
-      <summary>
-        <div class="plan-name">{{ plan.name }}</div>
-        <div class="plan-price ml-auto">
-          {{ `$` + setPlanPrice }}
-        </div>
-      </summary>
-      <form id="mobile-line-1" action="" @submit.prevent>
-        <div class="form-body">
-          <!-- Plan Name -->
-          <fieldset>
-            <div class="flex place-content-between">
-              <legend v-if="!editPlanName" class="legend w-auto" @click="toggleEditPlanName()">
-                {{ plan.name }}
-              </legend>
-              <input
-                v-else
-                v-model="plan.name"
-                class=""
-                title="plan name"
-                type="text"
-                @keyup.enter="toggleEditPlanName()"
-              />
-              <button class="ml-4" type="button" @click="toggleEditPlanName()">
-                <span v-if="editPlanName" class="material-icons">done</span>
-                <span v-else class="material-icons">edit</span>
-              </button>
-              <div class="plan-price ml-auto">
-                {{ `$` + setPlanPrice }}
-              </div>
-            </div>
-          </fieldset>
-          <!-- Plan Options -->
-          <fieldset>
-            <legend class="legend mb-0">Plan Options</legend>
-            <div v-for="option in planOptions" :key="option.name" class="flex items-center">
-              <label class="mr-2 mb-0" :for="`planOption` + option.name">{{ option.name }}</label>
-              <input
-                :id="`planOption` + option.name"
-                name="planOptions"
-                class="ml-4"
-                type="radio"
-                :checked="option.name === 'Basic'"
-                @click="selectPlanOptionCost(option)"
-              />
-            </div>
-          </fieldset>
-          <!-- Device Options -->
-          <fieldset>
-            <legend class="legend mb-0">Device Options</legend>
-            <div class="flex content-between">
-              <!-- Device Manufacturers -->
-              <div>
-                <label for="device-manufacturer">Select Manufacturer</label>
-                <select
-                  v-model="this.deviceManufacturerSelected"
-                  name="device-manufacturer"
-                  id="device-manufacturer"
-                  required
-                  @input="setDeviceManufacturer($event)"
-                >
-                  <option
-                    v-for="manufacturer in getDeviceManufacturers"
-                    :key="manufacturer.name"
-                    :value="manufacturer.name"
-                    :selected="this.deviceManufacturerSelected"
-                  >
-                    {{ manufacturer.name }}
-                  </option>
-                </select>
-              </div>
-              <!-- Device Models -->
-              <div>
-                <label id="device-models-label" class="label" for="device-models">Select Phone</label>
-                <select
-                  v-model="this.deviceModelSelected"
-                  name="device-models"
-                  id="device-models"
-                  aria-labelledby="device-models-label"
-                  required
-                  @input="setDeviceModel($event)"
-                >
-                  <option
-                    v-for="device in getDeviceModelsByManufacturer"
-                    :key="device.name"
-                    :value="device.name"
-                    :selected="this.deviceModelSelected"
-                  >
-                    {{ device.name }}
-                  </option>
-                </select>
-              </div>
-              <!-- Device Color -->
-              <div>
-                <div class="legend">Color</div>
-                <div v-for="color in getDeviceColors" :key="color.name" class="input-radio">
-                  <label class="mr-2 mb-0" :for="`device-color` + color.name">{{
-                    color.name
-                  }}</label>
-                  <input
-                    :id="`device-color` + color.name"
-                    name="device-colors"
-                    class="color-icon"
-                    type="radio"
-                    :style="{ background: color.hexcode }"
-                    @input="selectedDeviceColor(color.hexcode)"
-                  />
-                </div>
-              </div>
-            </div>
-            <!-- Storage -->
-            <div>
-              <div class="legend">Storage</div>
-              <div v-for="option in getDeviceStorage" :key="option.size" class="flex items-center">
-                <label class="ml-2 mb-0" :for="`device-storage-option` + option.size">{{
-                  option.size
-                }}</label>
-                <input
-                  :id="`device-storage-option` + option.size"
-                  name="storage-options"
-                  class="ml-4"
-                  type="radio"
-                />
-              </div>
-            </div>
-            <!-- Payment Plan -->
-            <div>
-              <div class="legend">Payment Plan</div>
-              <div class="flex content-between">
-                <div class="mr-2">
-                  <input
-                    id="installment-plan"
-                    name="installment-plan"
-                    class="mr-4"
-                    type="radio"
-                    @change=""
-                  />
-                  <label class="ml-2 mb-0" for="installment-plan">Installment Plan</label>
-                </div>
-                <div class="ml-2">
-                  <input id="pay-in-full" name="pay-in-full" class="mr-4" type="radio" @change="" />
-                  <label class="ml-2 mb-0" for="pay-in-full">Pay in Full</label>
-                </div>
-              </div>
-            </div>
-            <!-- Protection Plan -->
-            <div>
-              <div class="legend">Protection Plan</div>
-              <div class="flex content-between">
-                <div class="mr-2">
-                  <input
-                    id="add-protection-plan"
-                    name="add-protection-plan"
-                    class="mr-4"
-                    type="radio"
-                    @change=""
-                  />
-                  <label class="ml-2 mb-0" for="add-protection-plan">Add Protection Plan</label>
-                </div>
-                <div class="ml-2">
-                  <input
-                    id="decline-protection-plan"
-                    name="decline-protection-plan"
-                    class="mr-4"
-                    type="radio"
-                    @change=""
-                  />
-                  <label class="ml-2 mb-0" for="decline-protection-plan"
-                    >Decline Protection Plan</label
-                  >
-                </div>
-              </div>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend class="legend">Trade-in Options</legend>
-            <div class="flex">
-              <!-- Carrier -->
-              <div>
-                <label for="device-carrier">Carrier</label>
-                <select
-                  v-model="this.deviceCarrierSelected"
-                  name="device-carrier"
-                  id="device-carrier"
-                  required
-                  @input="setDeviceCarrier($event)"
-                >
-                  <option
-                    v-for="manufacturer in getDeviceManufacturers"
-                    :key="manufacturer.name"
-                    :value="manufacturer.name"
-                  >
-                    {{ manufacturer.name }}
-                  </option>
-                </select>
-              </div>
-              <!-- IMEI Number -->
-              <div>
-                <label class="label" for="IMEI-number"
-                  >IMEI
-                  <button type="button" @click="showHelpText()">
-                    <span class="material-icons">help</span>
-                  </button>
-                </label>
-                <input id="IMEI-number" name="IMEI-number" class="" title="IMEI Number" type="text" required />
-              </div>
-            </div>
-          </fieldset>
-        </div>
-      </form>
-    </details>
-    <dialog v-if="this.dialog" id="dialog">
-      <p>{{ this.dialogMessage }}</p>
-      <div>
-        <button value="cancel" @click="this.dialog = false">
-          <span class="material-icons">cancel</span>
-          <span class="sr-only">Cancel</span>
+  <div class="content" :class="{ 'preview-visible': showDataPreview }">
+    <div class="code-build">
+      <h2 class="flex justify-between mb-0 kite-type-style--title-2">
+        {{ title }}
+        <button
+          v-if="$route.name == 'submission'"
+          class="button-icon ml-2"
+          @click="this.showDataPreview = !this.showDataPreview"
+        >
+          <span v-if="!showDataPreview" class="material-icons icon">code</span>
+          <span v-else class="material-icons icon">visibility_off</span>
         </button>
+      </h2>
+      <details v-for="plan in getMobilePlans" :key="plan" :open="plan.editing" class="plan">
+        <summary>
+          <div class="plan-name">{{ plan.name }}</div>
+          <div class="plan-price ml-auto">
+            {{ `$` + setPlanPrice }}
+          </div>
+        </summary>
+        <form id="mobile-line-1" action="" @submit.prevent>
+          <div class="form-body">
+            <!-- Plan Name -->
+            <fieldset class="fieldset">
+              <div class="plan-title flex place-content-between pt-2">
+                <div class="flex place-content-between">
+                  <legend
+                    v-if="!editPlanName"
+                    class="plan-name legend mb-0 w-auto"
+                    @click="toggleEditPlanName()"
+                  >
+                    {{ plan.name }}
+                  </legend>
+                  <input
+                    v-else
+                    v-model="plan.name"
+                    class=""
+                    title="plan name"
+                    type="text"
+                    @keyup.enter="toggleEditPlanName()"
+                  />
+                  <button
+                    class="button-link button-small ml-4"
+                    type="button"
+                    @click="toggleEditPlanName()"
+                  >
+                    <span v-if="editPlanName" class="material-icons icon">done</span>
+                    <span v-else class="material-icons icon">edit</span>
+                  </button>
+                </div>
+                <div class="plan-price kite-type-style--title-5 m-0 ml-auto">
+                  {{ `$` + setPlanPrice }}
+                </div>
+              </div>
+            </fieldset>
+            <!-- Plan Options -->
+            <fieldset class="fieldset">
+              <legend class="legend mb-0">Plan Options</legend>
+              <div class="flex place-content-evenly">
+                <div
+                  v-for="option in planOptions"
+                  :key="option.name"
+                  class="flex items-center py-1 px-2"
+                >
+                  <input
+                    :id="`planOption` + option.name"
+                    name="planOptions"
+                    class="ml-4"
+                    type="radio"
+                    :checked="option.name === 'Basic'"
+                    @click="selectPlanOptionCost(option)"
+                  />
+                  <label class="ml-1 mb-0" :for="`planOption` + option.name">{{
+                    option.name
+                  }}</label>
+                </div>
+              </div>
+            </fieldset>
+            <!-- Device Options -->
+            <fieldset class="fieldset">
+              <legend class="legend mb-0">Device Options</legend>
+              <div class="flex justify-between gap-10 mb-8">
+                <div class="device-select flex flex-col grow pr-10">
+                  <!-- Device Manufacturers -->
+                  <div class="flex flex-col mb-5">
+                    <label for="device-manufacturer" class="required">Select Manufacturer</label>
+                    <select
+                      v-model="this.deviceManufacturerSelected"
+                      name="device-manufacturer"
+                      id="device-manufacturer"
+                      required
+                      @input="setDeviceManufacturer($event)"
+                    >
+                      <option
+                        v-for="manufacturer in getDeviceManufacturers"
+                        :key="manufacturer.name"
+                        :value="manufacturer.name"
+                        :selected="this.deviceManufacturerSelected"
+                      >
+                        {{ manufacturer.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <!-- Device Models -->
+                  <div class="flex flex-col">
+                    <label id="device-models-label" class="required" for="device-models"
+                      >Select Phone</label
+                    >
+                    <select
+                      v-model="this.deviceModelSelected"
+                      name="device-models"
+                      id="device-models"
+                      aria-labelledby="device-models-label"
+                      required
+                      @input="setDeviceModel($event)"
+                    >
+                      <option
+                        v-for="device in getDeviceModelsByManufacturer"
+                        :key="device.name"
+                        :value="device.name"
+                        :selected="this.deviceModelSelected"
+                      >
+                        {{ device.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <!-- Device Color -->
+                <div class="device-colors">
+                  <div class="legend">Color</div>
+                  <div v-for="color in getDeviceColors" :key="color.name" class="input-radio">
+                    <label class="mr-2 mb-0" :for="`device-color` + color.name">{{
+                      color.name
+                    }}</label>
+                    <input
+                      :id="`device-color` + color.name"
+                      name="device-colors"
+                      class="color-icon"
+                      type="radio"
+                      :style="{ background: color.hexcode }"
+                      @input="selectedDeviceColor(color.hexcode)"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-between gap-10 mb-8">
+                <!-- Storage -->
+                <div class="plan-storage grow">
+                  <div class="legend">Storage</div>
+                  <div class="grid grid-cols-2 gap-4 pr-4">
+                    <div
+                      v-for="option in getDeviceStorage"
+                      :key="option.size"
+                      class="flex items-center"
+                    >
+                      <input
+                        :id="`device-storage-option` + option.size"
+                        name="storage-options"
+                        class="ml-1"
+                        type="radio"
+                      />
+                      <label class="ml-2 mb-0" :for="`device-storage-option` + option.size">{{
+                        option.size
+                      }}</label>
+                    </div>
+                  </div>
+                </div>
+                <!-- Payment Plan -->
+                <div class="payment-plan">
+                  <div class="legend">Payment Plan</div>
+                  <div class="flex flex-col gap-4">
+                    <div class="flex">
+                      <input
+                        id="installment-plan"
+                        name="installment-plan"
+                        class="mr-1"
+                        type="radio"
+                        @change=""
+                      />
+                      <label class="ml-2 mb-0" for="installment-plan">Installment Plan</label>
+                    </div>
+                    <div class="flex">
+                      <input
+                        id="pay-in-full"
+                        name="pay-in-full"
+                        class="mr-1"
+                        type="radio"
+                        @change=""
+                      />
+                      <label class="ml-2 mb-0" for="pay-in-full">Pay in Full</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Protection Plan -->
+              <div>
+                <div class="legend">Protection Plan</div>
+                <div class="flex gap-5">
+                  <div class="flex items-center mr-2">
+                    <input
+                      id="add-protection-plan"
+                      name="add-protection-plan"
+                      class="mr-1"
+                      type="radio"
+                      @change=""
+                    />
+                    <label class="ml-1 mb-0" for="add-protection-plan">Add Protection Plan</label>
+                  </div>
+                  <div class="flex items-center ml-2">
+                    <input
+                      id="decline-protection-plan"
+                      name="decline-protection-plan"
+                      class="mr-1"
+                      type="radio"
+                      @change=""
+                    />
+                    <label class="ml-2 mb-0" for="decline-protection-plan"
+                      >Decline Protection Plan</label
+                    >
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+            <!-- Trade in Options -->
+            <fieldset class="fieldset">
+              <legend class="legend">Trade-in Options</legend>
+              <div class="flex justify-between gap-10">
+                <!-- Carrier -->
+                <div class="flex flex-col grow">
+                  <label class="required" for="device-carrier">Carrier</label>
+                  <select
+                    v-model="this.deviceCarrierSelected"
+                    name="device-carrier"
+                    id="device-carrier"
+                    class=""
+                    title="Select Carrier"
+                    required
+                    @input="setDeviceCarrier($event)"
+                  >
+                    <option
+                      v-for="manufacturer in getDeviceManufacturers"
+                      :key="manufacturer.name"
+                      :value="manufacturer.name"
+                    >
+                      {{ manufacturer.name }}
+                    </option>
+                  </select>
+                </div>
+                <!-- IMEI Number -->
+                <div class="flex flex-col grow">
+                  <label class="flex required" for="IMEI-number"
+                    >IMEI
+                    <button class="button-link ml-1" @click.stop="showHelpText()">
+                      <span v-if="!this.dialog" class="material-icons icon">help</span>
+                      <span v-else class="material-icons icon">cancel</span>
+                    </button>
+                  </label>
+                  <input
+                    id="IMEI-number"
+                    name="IMEI-number"
+                    class="IMEI-number"
+                    title="IMEI Number"
+                    type="text"
+                    required
+                  />
+                </div>
+              </div>
+            </fieldset>
+            <!-- Device Condition Questions -->
+            <fieldset class="fieldset">
+              <legend class="legend">Device Condition Questions</legend>
+              <div class="mb-2 py-2">
+                <div
+                  v-for="(question, index) in tradeInOptions.deviceConditionQuestions"
+                  :key="question.question"
+                  class="flex justify-between mb-2"
+                >
+                  <label class="mb-0" for="device-condition-questions">{{
+                    question.question
+                  }}</label>
+                  <div class="flex justify-between">
+                    <div class="mr-2">
+                      <input
+                        :id="`question-answer-` + index"
+                        :name="`question-answer-` + index"
+                        class="mr-1"
+                        type="radio"
+                        @change=""
+                      />
+                      <label class="ml-1 mb-0" :for="`question-answer-` + index">Yes</label>
+                    </div>
+                    <div class="ml-4">
+                      <input
+                        :id="`question-answer-` + index"
+                        :name="`question-answer-` + index"
+                        class="mr-1"
+                        type="radio"
+                        @change=""
+                      />
+                      <label class="ml-1 mb-0" :for="`question-answer-` + index">No</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex place-content-center gap-10">
+                <a class="link" href="#0">Check Trade-in</a>
+                <a class="link" href="#0">Send IMEI Instructions</a>
+              </div>
+            </fieldset>
+          </div>
+        </form>
+      </details>
+      <div class="form-actions flex items-center justify-between">
+        <button class="button-link" @click="addOrder()">
+          <span class="material-icons icon">add_circle</span>
+          <small class="">Add Line</small>
+        </button>
+        <div class="ml-a flex items-center place-content-between">
+          <button class="button-icon mr-3" @click="clearForm()">
+            <span class="material-icons icon">clear</span>
+            <span class="sr-only">Clear Order</span>
+          </button>
+          <button class="button-outline">
+            <span>Back</span>
+          </button>
+          <button class="button-primary ml-2" @click="saveOrder(this.mobilePlan)">
+            <span>Next</span>
+          </button>
+        </div>
       </div>
-    </dialog>
-    <!-- <pre><code>{{ this.mobilePlan }}</code></pre> -->
+      <dialog v-if="this.dialog" id="dialog" class="dialog">
+        <p>{{ this.dialogMessage }}</p>
+        <div>
+          <button value="cancel" @click="this.dialog = false">
+            <span class="material-icons icon">cancel</span>
+            <span class="sr-only">Cancel</span>
+          </button>
+        </div>
+      </dialog>
+    </div>
+    <div class="code-preview" :class="{ 'fade-in': showDataPreview }">
+      <pre><code>{{ this.mobilePlan }}</code></pre>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { type AppData } from '../../types'
 import { type events } from '../../types'
 
-export default {
+export default defineComponent({
+  name: 'MobilePlanForm',
   props: ['title'],
   data(): AppData {
     return {
       editPlanName: false,
       dialog: false,
+      showDataPreview: false,
       dialogMessage: '',
       mobilePlans: [],
       mobilePlan: {},
@@ -327,7 +449,7 @@ export default {
                     cost: 19.99
                   }
                 ]
-              },              
+              }
             ]
           },
           {
@@ -508,32 +630,38 @@ export default {
     setDeviceManufacturer(manufacturer: { target: { value: string } }): void {
       const manufacturerName = manufacturer.target.value
       const manufacturers = this.deviceOptions.manufacturers
-      const updatedDevices = manufacturers.filter((device: {name: string}) => device.name === manufacturerName)
+      const updatedDevices = manufacturers.filter(
+        (device: { name: string }) => device.name === manufacturerName
+      )
       // this.mobilePlan.device = updatedDevices
       return updatedDevices
     },
     setDeviceModel(model: { target: { value: string } }): void {
       const modelName = model.target.value
-      const updatedDeviceModels = this.deviceModels.filter((device: {name: string}) => device.name === modelName)
+      const updatedDeviceModels = this.deviceModels.filter(
+        (device: { name: string }) => device.name === modelName
+      )
       // this.mobilePlan.device = updatedDeviceModels
-      console.log("updatedDeviceModels", model, updatedDeviceModels)
+      console.log('updatedDeviceModels', model, updatedDeviceModels)
       return updatedDeviceModels
     },
     selectedDeviceColor(color: string) {
       this.mobilePlan.device.color.hexcode = color
     },
     showHelpText() {
-      this.dialog = true
+      this.dialog = !this.dialog
       this.dialogMessage =
-        'The International Mobile Equipment Identity (IMEI)[1] is a numeric identifier, usually unique'
+        'The International Mobile Equipment Identity (IMEI)[1] is a numeric identifier, usually unique,[2][3] for 3GPP and iDEN mobile phones, as well as some satellite phones.'
     },
     setDeviceCarrier(model: { target: { value: string } }): void {
       const modelName = model.target.value
-      const updatedDeviceModels = this.deviceModels.filter((device: {name: string}) => device.name === modelName)
+      const updatedDeviceModels = this.deviceModels.filter(
+        (device: { name: string }) => device.name === modelName
+      )
       // this.mobilePlan.device = updatedDeviceModels
-      console.log("updatedDeviceModels", model, updatedDeviceModels)
+      console.log('updatedDeviceModels', model, updatedDeviceModels)
       return updatedDeviceModels
-    }
+    },
   },
   watch: {
     deviceManufacturerSelected(manufacturer: string) {
@@ -544,7 +672,9 @@ export default {
     },
     getDeviceModelsByManufacturer(devices: []): void {
       const selectedDeviceName = this.deviceManufacturerSelected
-      const selectedDevice = devices.filter((device: {name: string}) => device.name == selectedDeviceName)
+      const selectedDevice = devices.filter(
+        (device: { name: string }) => device.name == selectedDeviceName
+      )
       this.mobilePlan.device = selectedDevice
       console.log('selectedDevice', selectedDeviceName, selectedDevice, devices)
     },
@@ -552,7 +682,7 @@ export default {
       this.deviceColors = colors
     }
   }
-}
+})
 </script>
 
 <style lang="scss">
@@ -572,6 +702,40 @@ export default {
       display: none;
     }
   }
+}
+
+.plan-title {
+  > * {
+    margin-bottom: 0;
+  }
+}
+
+.fieldset {
+  border-bottom: 1px solid var(--kite-color-gray-20);
+  margin-bottom: 1rem;
+  padding-bottom: 1.5rem;
+}
+
+.legend:not(.plan-name) {
+  color: var(--kite-color-gray-30);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.plan-name {
+  font-size: 1.25rem;
+}
+
+.device-select {
+}
+
+.device-colors {
+  flex-basis: 10rem;
+}
+
+.IMEI-number {
+  height: 25px;
 }
 
 .input-radio {
@@ -614,5 +778,15 @@ export default {
     width: 20px;
     z-index: 1;
   }
+}
+
+.dialog {
+  box-shadow: 0.25rem 0.25rem 15rem 0 rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--kite-color-gray-20);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -250px;
+  width: 500px;
 }
 </style>

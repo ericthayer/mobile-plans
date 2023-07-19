@@ -1,12 +1,21 @@
 <template>
-  <div class="container">
+  <div class="container" :class="{ 'submission-view': $route.name == 'submission' }">
     <header class="app-header" role="banner">
       <div class="wrapper">
-        <img alt="Mobile Plans logo" class="logo" src="@/assets/images/logo.svg" />
+        <RouterLink to="/">
+          <img class="logo" src="@/assets/images/logo.svg"  alt="Mobile Plans logo"  />
+        </RouterLink>
         <Introduction msg="Mobile Plans" />
         <nav class="main-menu" role="navigation">
           <RouterLink to="/" class="nav-item">Docs</RouterLink>
           <RouterLink to="/submission" class="nav-item">Submission</RouterLink>
+          <!-- <button
+            v-if="$route.name == 'submission'"
+            class="button-icon ml-2 py-0"
+            @click="showDataPreview(true)"
+          >
+            <span class="material-icons">code</span>
+          </button> -->
         </nav>
       </div>
     </header>
@@ -17,7 +26,6 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
 import Introduction from './components/text/Introduction.vue'
 </script>
 
@@ -42,13 +50,17 @@ import Introduction from './components/text/Introduction.vue'
   margin-right: auto;
   margin-bottom: 2rem;
   margin-left: auto;
-  max-width: 150px;
+  width: 150px;
 }
 
 .main-menu {
   margin-top: 2rem;
   text-align: center;
   width: 100%;
+
+  a {
+    text-decoration: none;
+  }
 }
 
 .nav-item {
@@ -68,13 +80,14 @@ import Introduction from './components/text/Introduction.vue'
   }
 }
 
+
 @container (min-width: 996px) {
   .app-header {
     display: flex;
     margin-bottom: 0;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
-   
+
     .wrapper {
       display: flex;
       place-items: flex-start;
