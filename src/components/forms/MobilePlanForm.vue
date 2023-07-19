@@ -183,7 +183,7 @@
                     <div class="flex">
                       <input
                         id="pay-in-full"
-                        name="payment-full"
+                        name="payment-plan"
                         class="mr-1"
                         type="radio"
                         @change=""

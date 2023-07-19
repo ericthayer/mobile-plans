@@ -6,7 +6,6 @@
 .container {
   display: flex;
   flex-direction: column;
-  place-items: center;
   margin: 0 auto;
   max-width: 1280px;
   padding: 2rem;
@@ -35,6 +34,7 @@
 // submission view
 
 .submission-view {
+  place-items: center;;
   padding-top: 160px;
 
   .app-header {
@@ -48,6 +48,7 @@
 
     .wrapper {
       display: flex;
+      flex-direction: row;
       justify-content: space-between;
       flex-grow: 1;
       flex-wrap: nowrap;

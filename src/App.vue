@@ -82,8 +82,9 @@ import Introduction from './components/text/Introduction.vue'
 
     .wrapper {
       display: flex;
-      place-items: flex-start;
+      flex-direction: column;
       flex-wrap: wrap;
+      place-items: flex-start;
     }
   }
 
