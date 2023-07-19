@@ -203,12 +203,12 @@
 </template>
 
 <script lang="ts">
+import { ref } from 'vue'
+import { AppData } from '../../types'
 
 export default {
   props: ['title'],
-  setup() {
-  },
-  data() {
+  data(): AppData {
     return {
       editPlanName: false,
       dialog: false,
@@ -507,21 +507,23 @@ export default {
     showHelpText() {
       this.dialog = true
       this.dialogMessage = "The International Mobile Equipment Identity (IMEI)[1] is a numeric identifier, usually unique"
+    },
+    setDeviceCarrier(carrier) {
+
     }
   },
   watch: {
-    // trigger device type
-    deviceManufacturerSelected(manufacturer) {
+    deviceManufacturerSelected(manufacturer: string) {
       this.$emit('onChange', manufacturer)
     },
-    deviceModelSelected(model) {
+    deviceModelSelected(model: string) {
       this.$emit('onChange', model)
     },
-    // sets the device in the store
-    getDeviceModelsByManufacturer(devices) {
+    getDeviceModelsByManufacturer(devices: []) {
       const selectedDeviceName = this.deviceManufacturerSelected
       const selectedDevice = devices.filter((device) => device.name == selectedDeviceName)
       // this.updateDevices(selectedDevice)
+      this.mobilePlan.device = selectedDevice
       console.log('selectedDevice', selectedDeviceName, selectedDevice, devices)
     },
     getDeviceColors(colors) {
