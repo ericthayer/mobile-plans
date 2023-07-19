@@ -69,7 +69,7 @@
                     class="ml-4"
                     type="radio"
                     :checked="option.name === 'Basic'"
-                    @click="selectPlanOptionCost(option)"
+                    @click="selectPlanOption(option)"
                   />
                   <label class="ml-1 mb-0" :for="`planOption` + option.name">{{
                     option.name
@@ -258,6 +258,7 @@
                     </button>
                   </label>
                   <input
+                    v-model="this.mobilePlan.tradeInOptions.IMEINumber"
                     id="IMEI-number"
                     name="IMEI-number"
                     class="IMEI-number"
@@ -379,6 +380,10 @@ export default defineComponent({
             hexcode: ''
           },
           storage: ''
+        },
+        protectionPlans: {
+          cost: '',
+          description: ''          
         },
         tradeInOptions: {
           carrier: '',
@@ -528,8 +533,8 @@ export default defineComponent({
       },
       protectionPlans: [
         {
-          cost: 5.0,
-          description: 'This is the protection plan description'
+          description: 'This is the protection plan description',
+          cost: 5.0
         }
       ],
       tradeInOptions: {
@@ -633,27 +638,29 @@ export default defineComponent({
     toggleEditPlanName() {
       this.editPlanName = !this.editPlanName
     },
-    selectPlanOptionCost(optionPlan: { name: string; cost: number }) {
+    selectPlanOption(optionPlan: { name: string; cost: number }) {
       const plans = this.mobilePlans
       const updatedPlans = plans.filter((plan: { editing: boolean }) => plan.editing == true)
       updatedPlans[0].price = optionPlan.cost
+      this.mobilePlan.planOption = optionPlan.name
     },
     setDeviceManufacturer(manufacturer: string) {
       const manufacturerName = manufacturer
       const manufacturers = this.deviceOptions.manufacturers
       const updatedDevices = manufacturers.filter(
-        (device: { name: string }) => device.name === manufacturerName
+        (device: { name: string }) => device.name == manufacturerName
       )
-      // this.mobilePlan.device = updatedDevices
+      this.mobilePlan.device = updatedDevices[0]
+      console.log(updatedDevices)
       return updatedDevices
     },
     setDeviceModel(model: string) {
       const modelName = model
       const updatedDeviceModels = this.deviceModels.filter(
-        (device: { name: string }) => device.name === modelName
+        (device: { name: string }) => device.name == modelName
       )
-      // this.mobilePlan.device = updatedDeviceModels
-      console.log('updatedDeviceModels', model, updatedDeviceModels)
+      this.mobilePlan.device = updatedDeviceModels
+      console.log("test", updatedDeviceModels)
       return updatedDeviceModels
     },
     selectedDeviceColor(color: string) {

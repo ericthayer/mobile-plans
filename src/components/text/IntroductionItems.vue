@@ -84,10 +84,11 @@ export default defineComponent({
     <template #heading>Thank You</template>
 
     This was an amazing expereince and chance to showcase what I can do. I plan on finishing the following:
-    <ul class="flex gap-4 mt-1 ml-0 pl-0">
-      <li class="ml-0">Fix Typescript errors</li>
-      <li class="ml-0">Setup data in store</li>
-      <li class="ml-0">Refactor JS & CSS</li>
+    <ul class="list">
+      <li class="ml-0"><span class="icon pr-2">✅</span>Fix Typescript errors</li>
+      <li class="ml-0"><span class="icon pr-2">☒</span>Setup data in store</li>
+      <li class="ml-0"><span class="icon pr-2">☒</span>Refactor JS & CSS</li>
     </ul>
   </IntroductionItem>
 </template>
+

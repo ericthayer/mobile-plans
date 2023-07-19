@@ -19,6 +19,10 @@ export interface AppData {
       },
       storage: string
     },
+    protectionPlans: {
+      description: string,
+      cost: string
+    },
     tradeInOptions: {
       carrier: string,
       IMEINumber: null,
