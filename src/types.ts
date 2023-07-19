@@ -1,6 +1,7 @@
 export interface AppData {
   editPlanName?: boolean
   dialog?: boolean
+  showDataPreview?: boolean
   dialogMessage?: string
   mobilePlans?: []
   mobilePlan?: {}

@@ -1,6 +1,6 @@
-import './assets/styles/tailwind.css'
+// import './assets/styles/tailwind.css'
 import './assets/styles/kite.css'
-import './assets/styles/main.css'
+import './assets/styles/main.scss'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
