@@ -13,7 +13,7 @@
           <!-- Plan Name -->
           <fieldset>
             <div class="flex place-content-between">
-              <legend v-if="!editPlanName" class="legend w-auto" @click="toggleEditPlanName(plan)">
+              <legend v-if="!editPlanName" class="legend w-auto" @click="toggleEditPlanName()">
                 {{ plan.name }}
               </legend>
               <input
@@ -22,9 +22,9 @@
                 class=""
                 title="plan name"
                 type="text"
-                @keyup.enter="toggleEditPlanName(plan)"
+                @keyup.enter="toggleEditPlanName()"
               />
-              <button class="ml-4" type="button" @click="toggleEditPlanName(plan)">
+              <button class="ml-4" type="button" @click="toggleEditPlanName()">
                 <span v-if="editPlanName" class="material-icons">done</span>
                 <span v-else class="material-icons">edit</span>
               </button>
@@ -37,14 +37,14 @@
           <fieldset>
             <legend class="legend mb-0">Plan Options</legend>
             <div v-for="option in planOptions" :key="option.name" class="flex items-center">
-              <label class="ml-2 mb-0" :for="`planOption` + option.name">{{ option.name }}</label>
+              <label class="mr-2 mb-0" :for="`planOption` + option.name">{{ option.name }}</label>
               <input
                 :id="`planOption` + option.name"
                 name="planOptions"
                 class="ml-4"
                 type="radio"
                 :checked="option.name === 'Basic'"
-                @click="addPlanOptionCost(option)"
+                @click="selectPlanOptionCost(option)"
               />
             </div>
           </fieldset>
@@ -56,7 +56,7 @@
               <div>
                 <label for="device-manufacturer">Select Manufacturer</label>
                 <select
-                  v-model="deviceManufacturerSelected"
+                  v-model="this.deviceManufacturerSelected"
                   name="device-manufacturer"
                   id="device-manufacturer"
                   required
@@ -66,6 +66,7 @@
                     v-for="manufacturer in getDeviceManufacturers"
                     :key="manufacturer.name"
                     :value="manufacturer.name"
+                    :selected="this.deviceManufacturerSelected"
                   >
                     {{ manufacturer.name }}
                   </option>
@@ -73,9 +74,9 @@
               </div>
               <!-- Device Models -->
               <div>
-                <label class="label" for="device-models">Select Phone</label>
+                <label id="device-models-label" class="label" for="device-models">Select Phone</label>
                 <select
-                  v-model="deviceModelSelected"
+                  v-model="this.deviceModelSelected"
                   name="device-models"
                   id="device-models"
                   aria-labelledby="device-models-label"
@@ -86,6 +87,7 @@
                     v-for="device in getDeviceModelsByManufacturer"
                     :key="device.name"
                     :value="device.name"
+                    :selected="this.deviceModelSelected"
                   >
                     {{ device.name }}
                   </option>
@@ -94,16 +96,17 @@
               <!-- Device Color -->
               <div>
                 <div class="legend">Color</div>
-                <div v-for="color in getDeviceColors" :key="color.name" class="flex items-center">
-                  <label class="ml-2 mb-0" :for="`device-color` + color.name">{{
+                <div v-for="color in getDeviceColors" :key="color.name" class="input-radio">
+                  <label class="mr-2 mb-0" :for="`device-color` + color.name">{{
                     color.name
                   }}</label>
                   <input
-                    :id="color.name"
-                    :name="color.name"
-                    :checked="getDeviceColors[0]"
-                    class="ml-4"
+                    :id="`device-color` + color.name"
+                    name="device-colors"
+                    class="color-icon"
                     type="radio"
+                    :style="{ background: color.hexcode }"
+                    @input="selectedDeviceColor(color.hexcode)"
                   />
                 </div>
               </div>
@@ -116,12 +119,31 @@
                   option.size
                 }}</label>
                 <input
-                  :id="option.size"
-                  :name="option.size"
-                  :checked="getDeviceStorage[0]"
+                  :id="`device-storage-option` + option.size"
+                  name="storage-options"
                   class="ml-4"
                   type="radio"
                 />
+              </div>
+            </div>
+            <!-- Payment Plan -->
+            <div>
+              <div class="legend">Payment Plan</div>
+              <div class="flex content-between">
+                <div class="mr-2">
+                  <input
+                    id="installment-plan"
+                    name="installment-plan"
+                    class="mr-4"
+                    type="radio"
+                    @change=""
+                  />
+                  <label class="ml-2 mb-0" for="installment-plan">Installment Plan</label>
+                </div>
+                <div class="ml-2">
+                  <input id="pay-in-full" name="pay-in-full" class="mr-4" type="radio" @change="" />
+                  <label class="ml-2 mb-0" for="pay-in-full">Pay in Full</label>
+                </div>
               </div>
             </div>
             <!-- Protection Plan -->
@@ -160,7 +182,7 @@
               <div>
                 <label for="device-carrier">Carrier</label>
                 <select
-                  v-model="deviceCarrierSelected"
+                  v-model="this.deviceCarrierSelected"
                   name="device-carrier"
                   id="device-carrier"
                   required
@@ -177,13 +199,13 @@
               </div>
               <!-- IMEI Number -->
               <div>
-                <label class="label" for="device-models"
+                <label class="label" for="IMEI-number"
                   >IMEI
                   <button type="button" @click="showHelpText()">
                     <span class="material-icons">help</span>
                   </button>
                 </label>
-                <input class="" title="IMEI Number" type="text" required />
+                <input id="IMEI-number" name="IMEI-number" class="" title="IMEI Number" type="text" required />
               </div>
             </div>
           </fieldset>
@@ -191,7 +213,7 @@
       </form>
     </details>
     <dialog v-if="this.dialog" id="dialog">
-      <p>{{ dialogMessage }}</p>
+      <p>{{ this.dialogMessage }}</p>
       <div>
         <button value="cancel" @click="this.dialog = false">
           <span class="material-icons">cancel</span>
@@ -199,12 +221,14 @@
         </button>
       </div>
     </dialog>
+    <!-- <pre><code>{{ this.mobilePlan }}</code></pre> -->
   </div>
 </template>
 
 <script lang="ts">
 import { ref } from 'vue'
-import { AppData } from '../../types'
+import { type AppData } from '../../types'
+import { type events } from '../../types'
 
 export default {
   props: ['title'],
@@ -303,7 +327,7 @@ export default {
                     cost: 19.99
                   }
                 ]
-              }
+              },              
             ]
           },
           {
@@ -390,6 +414,11 @@ export default {
       deviceModels: []
     }
   },
+  mounted() {
+    this.deviceManufacturerSelected = this.deviceOptions.manufacturers[0].name
+    this.deviceModelSelected = this.deviceOptions.manufacturers[0].models[0].name
+    // this.setDeviceManufacturer([devices])
+  },
   computed: {
     getMobilePlans() {
       const plans = this.mobilePlans
@@ -399,19 +428,15 @@ export default {
           name: 'Line Name',
           planOption: 'Basic',
           price: (39.99).toFixed(2),
-          device: [
-            {
+          device: {
+            name: '',
+            model: '',
+            color: {
               name: '',
-              model: '',
-              colors: [
-                {
-                  name: '',
-                  hexcode: ''
-                }
-              ],
-              storage: ''
-            }
-          ],
+              hexcode: ''
+            },
+            storage: ''
+          },
           tradeIn: {
             carrier: '',
             IMEINumber: null,
@@ -443,17 +468,15 @@ export default {
     getDeviceModelsByManufacturer() {
       const selectedManufacturer = this.deviceManufacturerSelected
       const selectedManufacturerDevices = this.deviceOptions.manufacturers.filter(
-        (manufacturer) => manufacturer.name == selectedManufacturer
+        (manufacturer: { name: string }) => manufacturer.name == selectedManufacturer
       )
       const selectedManufacturerDeviceModels = selectedManufacturerDevices[0]?.models
-      this.deviceModel = selectedManufacturerDeviceModels
-      this.setDeviceColors(selectedManufacturerDeviceModels)
       return selectedManufacturerDeviceModels
     },
     getDeviceColors() {
       const selectedModel = this.deviceModelSelected
       const selectedModels = this.deviceOptions.manufacturers[0]?.models.filter(
-        (model) => model.name == selectedModel
+        (model: { name: string }) => model.name == selectedModel
       )
       const deviceColors = selectedModels[0]?.colors
       console.log('deviceColors', deviceColors)
@@ -462,7 +485,7 @@ export default {
     getDeviceStorage() {
       const selectedModel = this.deviceModelSelected
       const selectedModels = this.deviceOptions.manufacturers[0]?.models.filter(
-        (model) => model.name == selectedModel
+        (model: { name: string }) => model.name == selectedModel
       )
       const deviceStorage = selectedModels[0]?.storage
       console.log('deviceStorage', deviceStorage)
@@ -477,39 +500,39 @@ export default {
     toggleEditPlanName() {
       this.editPlanName = !this.editPlanName
     },
-    addPlanOptionCost(optionPlan: { name: string; cost: number }) {
+    selectPlanOptionCost(optionPlan: { name: string; cost: number }) {
       const plans = this.mobilePlans
-      const updatedPlans = plans.filter((plan) => plan.editing == true)
+      const updatedPlans = plans.filter((plan: { editing: boolean }) => plan.editing == true)
       updatedPlans[0].price = optionPlan.cost
     },
-    setDeviceManufacturer(manufacturer) {
+    setDeviceManufacturer(manufacturer: { target: { value: string } }): void {
       const manufacturerName = manufacturer.target.value
       const manufacturers = this.deviceOptions.manufacturers
-      const updatedDevices = manufacturers.filter((device) => device.name === manufacturerName)
+      const updatedDevices = manufacturers.filter((device: {name: string}) => device.name === manufacturerName)
+      // this.mobilePlan.device = updatedDevices
       return updatedDevices
     },
-    setDeviceModel(model) {
+    setDeviceModel(model: { target: { value: string } }): void {
       const modelName = model.target.value
-      const updatedDeviceModels = this.deviceModels.filter((device) => device.name === modelName)
-      this.setDeviceColors(updatedDeviceModels)
-      console.log('updatedDeviceModels', updatedDeviceModels)
+      const updatedDeviceModels = this.deviceModels.filter((device: {name: string}) => device.name === modelName)
+      // this.mobilePlan.device = updatedDeviceModels
+      console.log("updatedDeviceModels", model, updatedDeviceModels)
       return updatedDeviceModels
     },
-    setDeviceColors(device) {
-      // const selectedDevice = device
-      // const selectedManufacturerDeviceColors = selectedDevice.filter(
-      //   (device) => device.name == selectedDevice.name
-      // )
-      // const selectedColors = selectedManufacturerDeviceColors
-      console.log('selectedColors', device)
-      // return selectedColors
+    selectedDeviceColor(color: string) {
+      this.mobilePlan.device.color.hexcode = color
     },
     showHelpText() {
       this.dialog = true
-      this.dialogMessage = "The International Mobile Equipment Identity (IMEI)[1] is a numeric identifier, usually unique"
+      this.dialogMessage =
+        'The International Mobile Equipment Identity (IMEI)[1] is a numeric identifier, usually unique'
     },
-    setDeviceCarrier(carrier) {
-
+    setDeviceCarrier(model: { target: { value: string } }): void {
+      const modelName = model.target.value
+      const updatedDeviceModels = this.deviceModels.filter((device: {name: string}) => device.name === modelName)
+      // this.mobilePlan.device = updatedDeviceModels
+      console.log("updatedDeviceModels", model, updatedDeviceModels)
+      return updatedDeviceModels
     }
   },
   watch: {
@@ -519,10 +542,9 @@ export default {
     deviceModelSelected(model: string) {
       this.$emit('onChange', model)
     },
-    getDeviceModelsByManufacturer(devices: []) {
+    getDeviceModelsByManufacturer(devices: []): void {
       const selectedDeviceName = this.deviceManufacturerSelected
-      const selectedDevice = devices.filter((device) => device.name == selectedDeviceName)
-      // this.updateDevices(selectedDevice)
+      const selectedDevice = devices.filter((device: {name: string}) => device.name == selectedDeviceName)
       this.mobilePlan.device = selectedDevice
       console.log('selectedDevice', selectedDeviceName, selectedDevice, devices)
     },
@@ -549,6 +571,48 @@ export default {
     > * {
       display: none;
     }
+  }
+}
+
+.input-radio {
+  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  position: relative;
+
+  label {
+    grid-column: 1 / 1;
+  }
+
+  input {
+    border: 0;
+    outline: 0;
+  }
+
+  input,
+  .color-icon {
+    grid-column: 2/2;
+  }
+}
+
+.color-icon {
+  position: relative;
+  border-radius: 50px;
+  display: block;
+  height: 20px;
+  width: 20px;
+
+  &:before {
+    background: inherit;
+    border-radius: 50px;
+    content: '';
+    display: block;
+    height: 20px;
+    position: absolute;
+    right: 0;
+    width: 20px;
+    z-index: 1;
   }
 }
 </style>
