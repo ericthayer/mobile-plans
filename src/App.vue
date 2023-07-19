@@ -15,6 +15,7 @@
     <main id="main" class="main" role="main">
       <RouterView />
     </main>
+    <a class="tag-version" href="https://github.com/ericthayer/mobile-plans/" target="_blank" rel="noopener">0.1.0</a>
   </div>
 </template>
 
@@ -100,5 +101,17 @@ import Introduction from './components/text/Introduction.vue'
     padding: 1rem 0;
     text-align: left;
   }
+}
+
+.tag-version {
+  background: var(--kite-color-gray-20);
+  color: var(--kite-color-gray-50);
+  bottom: 1rem;
+  font-size: 0.983rem;
+  padding: 2px 5px;
+  position: absolute;
+  right: 1.5rem;
+  text-decoration: none;
+  z-index: 1;
 }
 </style>
