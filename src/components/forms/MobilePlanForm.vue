@@ -90,7 +90,7 @@
                       name="device-manufacturer"
                       id="device-manufacturer"
                       required
-                      @input="setDeviceManufacturer(this.deviceManufacturerSelected)"
+                      @change="setDeviceManufacturer(this.deviceManufacturerSelected)"
                     >
                       <option
                         v-for="manufacturer in getDeviceManufacturers"
@@ -113,7 +113,7 @@
                       id="device-models"
                       aria-labelledby="device-models-label"
                       required
-                      @input="setDeviceModel(this.deviceModelSelected)"
+                      @change="setDeviceModel(this.deviceModelSelected)"
                     >
                       <option
                         v-for="device in getDeviceModelsByManufacturer"
@@ -139,7 +139,7 @@
                       class="color-icon"
                       type="radio"
                       :style="{ background: color.hexcode }"
-                      @input="selectedDeviceColor(color.hexcode)"
+                      @change="selectedDeviceColor(color.hexcode)"
                     />
                   </div>
                 </div>
@@ -579,8 +579,8 @@ export default defineComponent({
     }
   },
   mounted() {
-    // this.deviceManufacturerSelected = this.deviceOptions.manufacturers[0].name
-    // this.deviceModelSelected = this.deviceOptions.manufacturers[0].models[0].name
+    this.deviceManufacturerSelected = this.deviceOptions.manufacturers[0].name
+    this.deviceModelSelected = this.deviceOptions.manufacturers[0].models[0].name
   },
   computed: {
     getMobilePlans() {
@@ -650,8 +650,7 @@ export default defineComponent({
       const updatedDevices = manufacturers.filter(
         (device: { name: string }) => device.name == manufacturerName
       )
-      this.mobilePlan.device = updatedDevices[0]
-      console.log(updatedDevices)
+      // this.mobilePlan.device = updatedDevices[0]
       return updatedDevices
     },
     setDeviceModel(model: string) {
@@ -660,7 +659,7 @@ export default defineComponent({
         (device: { name: string }) => device.name == modelName
       )
       this.mobilePlan.device = updatedDeviceModels
-      console.log("test", updatedDeviceModels)
+      console.log(updatedDeviceModels)
       return updatedDeviceModels
     },
     selectedDeviceColor(color: string) {
