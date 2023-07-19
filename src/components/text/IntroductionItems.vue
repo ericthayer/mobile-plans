@@ -46,9 +46,6 @@ export default defineComponent({
     you need to test your components and web pages, check out
     <a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a> and
     <a href="https://on.cypress.io/component" target="_blank">Cypress Component Testing</a>.
-
-    <br />
-
     More instructions are available in <a href="https://github.com/ericthayer/mobile-plans#readme/" target="_blank" rel="noopener"><code>README.md</code></a>.
   </IntroductionItem>
 
