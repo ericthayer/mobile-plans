@@ -73,14 +73,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+// I would normally never so thi but I'm fighting with
+// my hacky way to import Tailwind & Kite.
+
 a,
 p:has(a) {
+  color: var(--kite-link-text-color);
   text-decoration: underline;
   text-decoration-skip-ink: auto;
 }
 
-// I would normally never so thi but I'm fighting with
-// my hacky way to import Tailwind & Kite.
 input,
 select,
 optgroup,

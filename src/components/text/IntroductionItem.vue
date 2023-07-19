@@ -26,6 +26,11 @@
   .title {
     margin-bottom: 0.5rem;
   }
+
+  a {
+    color: var(--kite-link-text-color);
+    text-decoration: underline;
+  }
 }
 
 i {

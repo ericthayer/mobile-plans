@@ -21,7 +21,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 .intro {
   margin-top: 0;
@@ -30,6 +30,11 @@ export default defineComponent({
   margin-left: auto;
   max-width: 65ch;
   text-align: center;
+
+  a {
+    color: var(--kite-link-text-color);
+    text-decoration: underline;
+  }
 }
 
 @container (min-width: 996px) {
