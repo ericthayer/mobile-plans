@@ -5,6 +5,37 @@ export interface AppData {
   dialogMessage?: string
   mobilePlans?: []
   mobilePlan?: {}
+  newPlan: {
+    created: string,
+    name: string,
+    planOption: string,
+    price: string,
+    device: {
+      name: string,
+      model: string,
+      color: {
+        name: string,
+        hexcode: string
+      },
+      storage: string
+    },
+    tradeInOptions: {
+      carrier: string,
+      IMEINumber: null,
+      deviceConditionQuestions: [
+        {
+          answer: null
+        },
+        {
+          answer: null
+        },
+        {
+          answer: null
+        }
+      ]
+    },
+    editing: boolean
+  },
   deviceOptions: {
     manufacturers: [
       {
@@ -173,10 +204,11 @@ export interface AppData {
       }
     ],
   }
-  deviceManufacturerSelected?: string,
-  deviceModelSelected?: string,
-  deviceCarrierSelected?: string,
-  IMEI?: string,
+  dynamicQuestionLabel?: string
+  deviceManufacturerSelected?: string
+  deviceModelSelected?: string
+  deviceCarrierSelected?: string
+  IMEI?: string
   deviceModels?: []
 }
 

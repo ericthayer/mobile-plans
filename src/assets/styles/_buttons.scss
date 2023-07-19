@@ -1,4 +1,4 @@
-[class^="button-"] {
+@mixin button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,6 +43,13 @@
   font-size: 0.875rem;
 }
 
+.button-primary,
+.button-outline,
+.button-link,
+.button-icon {
+  @include button
+}
+
 .button-primary {
   background: var(--kite-color-blue-10);
   color: var(--kite-color-white);
@@ -83,7 +90,7 @@
   padding: 0;
 
   &:has(.icon) {
-    padding-right: 0;
+    padding: 0;
 
     .icon {
       font-size: 24px;
@@ -111,4 +118,11 @@
     background: transparent;
     color: var(--kite-color-blue-20);
   }
+}
+
+.code-preview-button {
+  height: 30px;
+  width: 30px;
+  padding-left: 0;
+  margin-right: -10px;
 }

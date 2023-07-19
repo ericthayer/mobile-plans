@@ -1,11 +1,11 @@
 <template>
   <div class="content" :class="{ 'preview-visible': showDataPreview }">
     <div class="code-build">
-      <h2 class="flex justify-between mb-0 kite-type-style--title-2">
+      <h2 class="flex justify-between mb-0 kite-type-style--title-4">
         {{ title }}
         <button
           v-if="$route.name == 'submission'"
-          class="button-icon ml-2"
+          class="button-icon code-preview-button ml-2"
           @click="this.showDataPreview = !this.showDataPreview"
         >
           <span v-if="!showDataPreview" class="material-icons icon">code</span>
@@ -16,10 +16,10 @@
         <summary>
           <div class="plan-name">{{ plan.name }}</div>
           <div class="plan-price ml-auto">
-            {{ `$` + setPlanPrice }}
+            {{ `$` + getPlanPrice }}
           </div>
         </summary>
-        <form id="mobile-line-1" action="" @submit.prevent>
+        <form id="mobile-line-1" class="form" action="post" @submit.prevent>
           <div class="form-body">
             <!-- Plan Name -->
             <fieldset class="fieldset">
@@ -50,7 +50,7 @@
                   </button>
                 </div>
                 <div class="plan-price kite-type-style--title-5 m-0 ml-auto">
-                  {{ `$` + setPlanPrice }}
+                  {{ `$` + getPlanPrice }}
                 </div>
               </div>
             </fieldset>
@@ -148,7 +148,7 @@
                 <!-- Storage -->
                 <div class="plan-storage grow">
                   <div class="legend">Storage</div>
-                  <div class="grid grid-cols-2 gap-4 pr-4">
+                  <div class="grid grid-cols-2 gap-1 pt-1 pr-4">
                     <div
                       v-for="option in getDeviceStorage"
                       :key="option.size"
@@ -169,7 +169,7 @@
                 <!-- Payment Plan -->
                 <div class="payment-plan">
                   <div class="legend">Payment Plan</div>
-                  <div class="flex flex-col gap-4">
+                  <div class="flex flex-col gap-1 pt-1">
                     <div class="flex">
                       <input
                         id="installment-plan"
@@ -239,11 +239,12 @@
                     @input="setDeviceCarrier($event)"
                   >
                     <option
-                      v-for="manufacturer in getDeviceManufacturers"
-                      :key="manufacturer.name"
-                      :value="manufacturer.name"
+                      v-for="carrier in getDeviceCarriers"
+                      :key="carrier.name"
+                      :value="carrier.name"
+                      :selected="this.deviceCarrierSelected"
                     >
-                      {{ manufacturer.name }}
+                      {{ carrier.name }}
                     </option>
                   </select>
                 </div>
@@ -276,29 +277,31 @@
                   :key="question.question"
                   class="flex justify-between mb-2"
                 >
-                  <label class="mb-0" for="device-condition-questions">{{
+                  <label class="mb-0" :for="`question-` + index + this.dynamicQuestionLabel">{{
                     question.question
                   }}</label>
                   <div class="flex justify-between">
                     <div class="mr-2">
                       <input
-                        :id="`question-answer-` + index"
-                        :name="`question-answer-` + index"
+                        :id="`question-` + index + `-answer-yes`"
+                        :name="`question-` + index + `-answer-yes`"
                         class="mr-1"
                         type="radio"
-                        @change=""
+                        @change="setAnswer(true)"
                       />
-                      <label class="ml-1 mb-0" :for="`question-answer-` + index">Yes</label>
+                      <label class="ml-1 mb-0" :for="`question-` + index + `-answer-yes`"
+                        >Yes</label
+                      >
                     </div>
                     <div class="ml-4">
                       <input
-                        :id="`question-answer-` + index"
-                        :name="`question-answer-` + index"
+                        :id="`question-` + index + `-answer-no`"
+                        :name="`question-` + index + `-answer-no`"
                         class="mr-1"
                         type="radio"
-                        @change=""
+                        @change="setAnswer(false)"
                       />
-                      <label class="ml-1 mb-0" :for="`question-answer-` + index">No</label>
+                      <label class="ml-1 mb-0" :for="`question-` + index + `-answer-no`">No</label>
                     </div>
                   </div>
                 </div>
@@ -311,8 +314,9 @@
           </div>
         </form>
       </details>
-      <div class="form-actions flex items-center justify-between">
-        <button class="button-link" @click="addOrder()">
+      <!-- Form Actions -->
+      <div class="form-actions flex items-center justify-between mt-5">
+        <button class="button-link" @click="addMobilePlan()">
           <span class="material-icons icon">add_circle</span>
           <small class="">Add Line</small>
         </button>
@@ -361,6 +365,37 @@ export default defineComponent({
       dialogMessage: '',
       mobilePlans: [],
       mobilePlan: {},
+      newPlan: {
+        created: Date().toString(),
+        name: 'New Line',
+        planOption: 'Basic',
+        price: (39.99).toFixed(2),
+        device: {
+          name: '',
+          model: '',
+          color: {
+            name: '',
+            hexcode: ''
+          },
+          storage: ''
+        },
+        tradeInOptions: {
+          carrier: '',
+          IMEINumber: null,
+          deviceConditionQuestions: [
+            {
+              answer: null
+            },
+            {
+              answer: null
+            },
+            {
+              answer: null
+            }
+          ]
+        },
+        editing: true
+      },
       planOptions: [
         {
           name: 'Basic',
@@ -529,6 +564,7 @@ export default defineComponent({
           }
         ]
       },
+      dynamicQuestionLabel: '-answer-no',
       deviceManufacturerSelected: '',
       deviceModelSelected: '',
       deviceCarrierSelected: '',
@@ -537,49 +573,20 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.deviceManufacturerSelected = this.deviceOptions.manufacturers[0].name
-    this.deviceModelSelected = this.deviceOptions.manufacturers[0].models[0].name
-    // this.setDeviceManufacturer([devices])
+    // this.deviceManufacturerSelected = this.deviceOptions.manufacturers[0].name
+    // this.deviceModelSelected = this.deviceOptions.manufacturers[0].models[0].name
   },
   computed: {
     getMobilePlans() {
       const plans = this.mobilePlans
 
       if (plans.length === 0) {
-        const newPlan = {
-          name: 'Line Name',
-          planOption: 'Basic',
-          price: (39.99).toFixed(2),
-          device: {
-            name: '',
-            model: '',
-            color: {
-              name: '',
-              hexcode: ''
-            },
-            storage: ''
-          },
-          tradeIn: {
-            carrier: '',
-            IMEINumber: null,
-            deviceConditionQuestions: [
-              {
-                answer: null
-              },
-              {
-                answer: null
-              },
-              {
-                answer: null
-              }
-            ]
-          },
-          editing: true
-        }
+        
+        const plan = this.newPlan
 
-        this.mobilePlan = newPlan
+        this.mobilePlan = plan
 
-        plans.push(newPlan)
+        plans.push(plan)
         return plans
       } else return plans
     },
@@ -613,9 +620,13 @@ export default defineComponent({
       console.log('deviceStorage', deviceStorage)
       return deviceStorage
     },
-    setPlanPrice() {
+    getPlanPrice() {
       const plans = this.mobilePlans.filter((plan: { editing: boolean }) => plan.editing == true)
       return plans[0]?.price
+    },
+    getDeviceCarriers() {
+      const carriers = this.tradeInOptions?.carriers
+      return carriers
     }
   },
   methods: {
@@ -653,14 +664,28 @@ export default defineComponent({
       this.dialogMessage =
         'The International Mobile Equipment Identity (IMEI)[1] is a numeric identifier, usually unique,[2][3] for 3GPP and iDEN mobile phones, as well as some satellite phones.'
     },
-    setDeviceCarrier(model: { target: { value: string } }): void {
-      const modelName = model.target.value
-      const updatedDeviceModels = this.deviceModels.filter(
-        (device: { name: string }) => device.name === modelName
+    setDeviceCarrier(carrier: { target: { value: string } }) {
+      const carrierName = carrier.target.value
+      const updatedDeviceCarriers = this.tradeInOptions.carriers.filter(
+        (carrier: { name: string }) => carrier.name === carrierName
       )
-      // this.mobilePlan.device = updatedDeviceModels
-      console.log('updatedDeviceModels', model, updatedDeviceModels)
-      return updatedDeviceModels
+      this.mobilePlan.tradeInOptions.carrier = carrierName
+      return carrierName
+    },
+    setAnswer(answer: boolean) {
+      if (answer) {
+        this.dynamicQuestionLabel = '-answer-yes'
+      } else {
+        this.dynamicQuestionLabel = '-answer-no'
+      }
+    },
+    addMobilePlan() {
+      const plans = this.mobilePlans
+      const newPlan = this.newPlan
+      newPlan.name = 'Another Line'
+      //  TODO: change the last plan's title
+      // const lastPlan = plans.filter((plan: {created: string}) => plan.created > Date.now().toString()) 
+      plans.push(newPlan)
     },
   },
   watch: {
@@ -670,22 +695,21 @@ export default defineComponent({
     deviceModelSelected(model: string) {
       this.$emit('onChange', model)
     },
+    deviceCarrierSelected(carrier: string) {
+      this.$emit('onChange', carrier)
+    },
     getDeviceModelsByManufacturer(devices: []): void {
       const selectedDeviceName = this.deviceManufacturerSelected
       const selectedDevice = devices.filter(
         (device: { name: string }) => device.name == selectedDeviceName
       )
       this.mobilePlan.device = selectedDevice
-      console.log('selectedDevice', selectedDeviceName, selectedDevice, devices)
-    },
-    getDeviceColors(colors) {
-      this.deviceColors = colors
     }
   }
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .plan:not([open]) {
   summary {
     display: flex;
@@ -703,7 +727,6 @@ export default defineComponent({
     }
   }
 }
-
 .plan-title {
   > * {
     margin-bottom: 0;
@@ -714,6 +737,11 @@ export default defineComponent({
   border-bottom: 1px solid var(--kite-color-gray-20);
   margin-bottom: 1rem;
   padding-bottom: 1.5rem;
+
+  &:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
 }
 
 .legend:not(.plan-name) {
@@ -724,14 +752,17 @@ export default defineComponent({
 }
 
 .plan-name {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
+  font-weight: 500;
 }
 
-.device-select {
+.payment-plan {
+  flex-basis: 15rem;
 }
 
 .device-colors {
   flex-basis: 10rem;
+  padding-right: 1rem;
 }
 
 .IMEI-number {

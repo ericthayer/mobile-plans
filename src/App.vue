@@ -9,13 +9,6 @@
         <nav class="main-menu" role="navigation">
           <RouterLink to="/" class="nav-item">Docs</RouterLink>
           <RouterLink to="/submission" class="nav-item">Submission</RouterLink>
-          <!-- <button
-            v-if="$route.name == 'submission'"
-            class="button-icon ml-2 py-0"
-            @click="showDataPreview(true)"
-          >
-            <span class="material-icons">code</span>
-          </button> -->
         </nav>
       </div>
     </header>
@@ -79,7 +72,6 @@ import Introduction from './components/text/Introduction.vue'
     border: 0;
   }
 }
-
 
 @container (min-width: 996px) {
   .app-header {

@@ -1,3 +1,10 @@
-form {
-  border: 1px solid var(--kite-color-gray-10);
+.form {
+  background: var(--kite-color-white);
+  border: 1px solid var(--kite-color-gray-20);
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  padding-right: 1.5rem;
+  padding-top: 1rem;
+  padding-left: 1.5rem;
 }

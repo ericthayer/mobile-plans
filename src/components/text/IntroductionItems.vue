@@ -9,7 +9,7 @@ import CommunityIcon from '../icons/IconCommunity.vue'
 import SupportIcon from '../icons/IconSupport.vue'
 
 export default defineComponent({
-  name: 'SelectComponent',
+  name: 'IntroductionItems',
   components: {
     IntroductionItem,
     DocumentationIcon,
@@ -27,10 +27,9 @@ export default defineComponent({
       <DocumentationIcon />
     </template>
     <template #heading>Documentation</template>
-
-    Vue’s
-    <a href="https://vuejs.org/" target="_blank" rel="noopener">official documentation</a>
-    provides you with all information you need to get started.
+    View project on
+    <a href="https://github.com/ericthayer/mobile-plans/" target="_blank" rel="noopener">GitHub</a>
+    to test this out locally.
   </IntroductionItem>
 
   <IntroductionItem>
@@ -50,7 +49,7 @@ export default defineComponent({
 
     <br />
 
-    More instructions are available in <code>README.md</code>.
+    More instructions are available in <a href="https://github.com/ericthayer/mobile-plans#readme/" target="_blank" rel="noopener"><code>README.md</code></a>.
   </IntroductionItem>
 
   <IntroductionItem>
@@ -75,26 +74,20 @@ export default defineComponent({
     </template>
     <template #heading>Community</template>
 
-    Got stuck? Ask your question on
-    <a href="https://chat.vuejs.org" target="_blank" rel="noopener">Vue Land</a>, our official
-    Discord server, or
-    <a href="https://stackoverflow.com/questions/tagged/vue.js" target="_blank" rel="noopener"
-      >StackOverflow</a
-    >. You should also subscribe to
-    <a href="https://news.vuejs.org" target="_blank" rel="noopener">our mailing list</a> and follow
-    the official
-    <a href="https://twitter.com/vuejs" target="_blank" rel="noopener">@vuejs</a>
-    twitter account for latest news in the Vue world.
+   Please reach out on Discord @ eric.thayer or send me an <a href="mailto:ethayer.design@gmail" target="_blank" rel="noopener">email</a> if you want to chat about this project, my process, or collaborate on something else.
   </IntroductionItem>
 
   <IntroductionItem>
     <template #icon>
       <SupportIcon />
     </template>
-    <template #heading>Support Vue</template>
+    <template #heading>Thank You</template>
 
-    As an independent project, Vue relies on community backing for its sustainability. You can help
-    us by
-    <a href="https://vuejs.org/sponsor/" target="_blank" rel="noopener">becoming a sponsor</a>.
+    This was an amazing expereince and chance to showcase what I can do. I plan on finishing the following:
+    <ul class="flex gap-4 mt-1 ml-0 pl-0">
+      <li class="ml-0">Fix Typescript errors</li>
+      <li class="ml-0">Setup data in store</li>
+      <li class="ml-0">Refactor JS & CSS</li>
+    </ul>
   </IntroductionItem>
 </template>

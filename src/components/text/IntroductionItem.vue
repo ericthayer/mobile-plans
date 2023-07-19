@@ -21,7 +21,7 @@
 
 .details {
   flex: 1;
-  margin-left: 1rem;
+  margin-left: 4rem;
 
   .title {
     margin-bottom: 0.5rem;
@@ -44,7 +44,8 @@ i {
 @container (min-width: 996px) {
   .item {
     margin-top: 0;
-    padding: 1rem 0 1rem calc(var(--section-gap) / 2);
+    padding: 1rem 0 20rem calc(var(--section-gap) / 2);
+    padding-bottom: 2rem;
   }
 
   i {

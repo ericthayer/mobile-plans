@@ -1,0 +1,118 @@
+:root {
+  --theme-color-white: #ffffff;
+  --theme-color-white-soft: #f8f8f8;
+  --theme-color-white-mute: #f2f2f2;
+
+  --theme-color-black: #181818;
+  --theme-color-black-soft: #222222;
+  --theme-color-black-mute: #282828;
+
+  --theme-color-indigo: #2c3e50;
+
+  --theme-color-divider-light-1: rgba(60, 60, 60, 0.29);
+  --theme-color-divider-light-2: rgba(60, 60, 60, 0.12);
+  --theme-color-divider-dark-1: rgba(84, 84, 84, 0.65);
+  --theme-color-divider-dark-2: rgba(84, 84, 84, 0.48);
+
+  --theme-color-text-light-1: var(--theme-color-indigo);
+  --theme-color-text-light-2: rgba(60, 60, 60, 0.66);
+  --theme-color-text-dark-1: var(--theme-color-white);
+  --theme-color-text-dark-2: rgba(235, 235, 235, 0.64);
+}
+
+/* semantic color variables for this project */
+:root {
+  --color-background: var(--theme-color-white);
+  --color-background-soft: var(--theme-color-white-soft);
+  --color-background-mute: var(--theme-color-white-mute);
+
+  --color-border: var(--theme-color-divider-light-2);
+  --color-border-hover: var(--theme-color-divider-light-1);
+
+  --color-heading: var(--theme-color-text-light-1);
+  --color-text: var(--theme-color-text-light-1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: var(--theme-color-black);
+    --color-background-soft: var(--theme-color-black-soft);
+    --color-background-mute: var(--theme-color-black-mute);
+
+    --color-border: var(--theme-color-divider-dark-2);
+    --color-border-hover: var(--theme-color-divider-dark-1);
+
+    --color-heading: var(--theme-color-text-dark-1);
+    --color-text: var(--theme-color-text-dark-2);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+:root {
+  container-type: inline-size;
+}
+
+html {
+  height: auto !important;
+}
+
+body {
+  min-height: 100vh !important;
+  background: var(--kite-color-gray-10) !important;
+  transition: color 0.5s, background-color 0.5s;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a,
+p:has(a) {
+  text-decoration: underline;
+  text-decoration-skip-ink: auto;
+}
+
+// I would normally never so thi but I'm fighting with
+// my hacky way to import Tailwind & Kite.
+input,
+select,
+optgroup,
+textarea,
+input[type='text'],
+input[type='search'],
+input[type='email'],
+input[type='url'],
+input[type='tel'],
+input[type='password'],
+input[type='number'],
+input[type='datetime-local'],
+input[type='date'],
+input[type='time'],
+input[type='month'],
+input[type='week'] {
+  border-radius: 5px;
+  border: 1px solid var(--color-border);
+  padding-top: 0.25rem;
+  padding-right: 0.3rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.3rem;
+}
+
+select {
+  // padding-right: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+
+ul {
+  // list-style: disc;
+}
+
