@@ -579,8 +579,8 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.deviceManufacturerSelected = this.deviceOptions.manufacturers[0].name
-    this.deviceModelSelected = this.deviceOptions.manufacturers[0].models[0].name
+    // this.deviceManufacturerSelected = this.deviceOptions.manufacturers[0].name
+    // this.deviceModelSelected = this.deviceOptions.manufacturers[0].models[0].name
   },
   computed: {
     getMobilePlans() {
@@ -650,8 +650,8 @@ export default defineComponent({
       const updatedDevices = manufacturers.filter(
         (device: { name: string }) => device.name == manufacturerName
       )
-      // this.mobilePlan.device = updatedDevices[0]
-      return updatedDevices
+      // updatedDevices.map((device: { name: string}) => device.name)
+      this.mobilePlan.device.name = updatedDevices[0].name
     },
     setDeviceModel(model: string) {
       const modelName = model
@@ -710,13 +710,21 @@ export default defineComponent({
     deviceCarrierSelected(carrier: string) {
       this.$emit('onChange', carrier)
     },
-    getDeviceModelsByManufacturer(devices: []): void {
-      const selectedDeviceName = this.deviceManufacturerSelected
-      const selectedDevice = devices.filter(
-        (device: { name: string }) => device.name == selectedDeviceName
-      )
-      this.mobilePlan.device = selectedDevice
-    }
+    // getDeviceModelsByManufacturer(devices: []): void {
+    //   const selectedDeviceName = this.deviceManufacturerSelected
+    //   const selectedDevice = devices.filter(
+    //     (device: { name: string }) => device.name == selectedDeviceName
+    //   )
+    //   this.mobilePlan.device = selectedDevice
+    // },
+    // getDeviceModelsByManufacturer() {
+    //   const selectedManufacturer = this.deviceManufacturerSelected
+    //   const selectedManufacturerDevices = this.deviceOptions.manufacturers.filter(
+    //     (manufacturer: { name: string }) => manufacturer.name == selectedManufacturer
+    //   )
+    //   const selectedManufacturerDeviceModels = selectedManufacturerDevices[0]?.models
+    //   return selectedManufacturerDeviceModels
+    // },
   }
 })
 </script>
