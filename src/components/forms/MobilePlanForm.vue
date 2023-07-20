@@ -137,7 +137,7 @@
                       class="color-icon"
                       type="radio"
                       :style="{ background: color.hexcode }"
-                      @change="selectedDeviceColor(color.hexcode)"
+                      @change="setDeviceColor(color)"
                     />
                   </div>
                 </div>
@@ -612,7 +612,6 @@ export default defineComponent({
         (model: { name: string }) => model.name == selectedModel
       )
       const deviceColors = selectedModels[0]?.colors
-      // console.log('deviceColors', deviceColors)
       return deviceColors
     },
     getDeviceStorage() {
@@ -648,29 +647,24 @@ export default defineComponent({
       const manufacturers = this.deviceOptions.manufacturers
       const updatedDevices = manufacturers.filter(
         (device: { name: string }) => device.name == manufacturerName
-      )
-      
+      )      
       this.deviceModels = updatedDevices
       this.mobilePlan.device.name = updatedDevices[0]?.name
-      this.deviceModelSelected = ''
       this.mobilePlan.device.model = ''
+      this.mobilePlan.device.color.name = ''
+      this.mobilePlan.device.color.hexcode = ''
+      this.deviceModelSelected = ''
     },
     setDeviceModel(model: string) {
       const modelName = model
-      const deviceModels = this.deviceModels
       const updatedDeviceModels = this.deviceModels[0]?.models.filter(
         (device: { name: string }) => device.name == modelName
       )
-      if (modelName !== updatedDeviceModels[0]?.name) {
-        this.deviceModelSelected = ''
-        this.mobilePlan.device.model = ''
-      } else {
-        this.mobilePlan.device.model = updatedDeviceModels[0]?.name
-        // this.deviceModels = updatedDevices
-      }
+      this.mobilePlan.device.model = updatedDeviceModels[0]?.name
     },
-    selectedDeviceColor(color: string) {
-      this.mobilePlan.device.color.hexcode = color
+    setDeviceColor(color: { name: string, hexcode: string }) {
+      this.mobilePlan.device.color.name = color.name
+      this.mobilePlan.device.color.hexcode = color.hexcode
     },
     showHelpText() {
       this.dialog = !this.dialog
@@ -717,21 +711,6 @@ export default defineComponent({
     deviceCarrierSelected(carrier: string) {
       this.$emit('onChange', carrier)
     }
-    // getDeviceModelsByManufacturer(devices: []): void {
-    //   const selectedDeviceName = this.deviceManufacturerSelected
-    //   const selectedDevice = devices.filter(
-    //     (device: { name: string }) => device.name == selectedDeviceName
-    //   )
-    //   this.mobilePlan.device = selectedDevice
-    // },
-    // getDeviceModelsByManufacturer() {
-    //   const selectedManufacturer = this.deviceManufacturerSelected
-    //   const selectedManufacturerDevices = this.deviceOptions.manufacturers.filter(
-    //     (manufacturer: { name: string }) => manufacturer.name == selectedManufacturer
-    //   )
-    //   const selectedManufacturerDeviceModels = selectedManufacturerDevices[0]?.models
-    //   return selectedManufacturerDeviceModels
-    // },
   }
 })
 </script>
