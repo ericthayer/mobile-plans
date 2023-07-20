@@ -215,10 +215,17 @@ export interface AppData {
   IMEI?: string
   deviceModels?: []
 }
-
-
 export interface events {
   setDeviceManufacturer: ($event: {}) => void
   setDeviceModel: ($event: {}) => void
   setDeviceCarrier: ($event: {}) => void
 }
+
+export interface ToDoList {
+  toDoList: [
+    {
+      description: string,
+      completed: boolean
+    }
+  ]
+} 

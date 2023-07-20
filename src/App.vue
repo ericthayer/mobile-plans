@@ -3,7 +3,7 @@
     <header class="app-header" role="banner">
       <div class="wrapper">
         <RouterLink to="/">
-          <img class="logo" src="@/assets/images/logo.svg"  alt="Mobile Plans logo"  />
+          <img class="logo" src="@/assets/images/logo.svg" alt="Mobile Plans logo" />
         </RouterLink>
         <Introduction msg="Mobile Plans" />
         <nav class="main-menu" role="navigation">
@@ -15,7 +15,15 @@
     <main id="main" class="main" role="main">
       <RouterView />
     </main>
-    <a class="tag-version" href="https://github.com/ericthayer/mobile-plans/" target="_blank" rel="noopener">0.1.0</a>
+    <div class="app-actions">
+      <a
+        class="tag-version"
+        href="https://github.com/ericthayer/mobile-plans/"
+        target="_blank"
+        rel="noopener"
+        >0.1.0</a
+      >
+    </div>
   </div>
 </template>
 

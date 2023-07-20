@@ -16,7 +16,6 @@ export default defineComponent({
   name: 'Introduction',
   props: {
     msg: String
-
   },
 })
 </script>

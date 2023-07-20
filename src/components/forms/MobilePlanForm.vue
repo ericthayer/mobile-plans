@@ -96,7 +96,6 @@
                         v-for="manufacturer in getDeviceManufacturers"
                         :key="manufacturer.name"
                         :value="manufacturer.name"
-                        :selected="this.deviceManufacturerSelected"
                       >
                         {{ manufacturer.name }}
                       </option>
@@ -119,7 +118,6 @@
                         v-for="device in getDeviceModelsByManufacturer"
                         :key="device.name"
                         :value="device.name"
-                        :selected="this.deviceModelSelected"
                       >
                         {{ device.name }}
                       </option>
@@ -127,7 +125,7 @@
                   </div>
                 </div>
                 <!-- Device Color -->
-                <div class="device-colors">
+                <div v-if="this.deviceModelSelected" class="device-colors">
                   <div class="legend">Color</div>
                   <div v-for="color in getDeviceColors" :key="color.name" class="input-radio">
                     <label class="mr-2 mb-0" :for="`device-color` + color.name">{{
@@ -242,7 +240,6 @@
                       v-for="carrier in getDeviceCarriers"
                       :key="carrier.name"
                       :value="carrier.name"
-                      :selected="this.deviceCarrierSelected"
                     >
                       {{ carrier.name }}
                     </option>
@@ -278,9 +275,11 @@
                   :key="question.question"
                   class="flex justify-between mb-2"
                 >
-                  <label class="mb-0 pointer-events-none" :for="`question-` + index + this.dynamicQuestionLabel">{{
-                    question.question
-                  }}</label>
+                  <label
+                    class="mb-0 pointer-events-none"
+                    :for="`question-` + index + this.dynamicQuestionLabel"
+                    >{{ question.question }}</label
+                  >
                   <div class="flex justify-between">
                     <div class="mr-2">
                       <input
@@ -383,7 +382,7 @@ export default defineComponent({
         },
         protectionPlans: {
           cost: '',
-          description: ''          
+          description: ''
         },
         tradeInOptions: {
           carrier: '',
@@ -579,8 +578,8 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.deviceManufacturerSelected = this.deviceOptions.manufacturers[0].name
-    this.deviceModelSelected = this.deviceOptions.manufacturers[0].models[0].name
+    // this.deviceManufacturerSelected = this.deviceOptions.manufacturers[0].name
+    // this.deviceModelSelected = this.deviceOptions.manufacturers[0].models[0].name
   },
   computed: {
     getMobilePlans() {
@@ -613,7 +612,7 @@ export default defineComponent({
         (model: { name: string }) => model.name == selectedModel
       )
       const deviceColors = selectedModels[0]?.colors
-      console.log('deviceColors', deviceColors)
+      // console.log('deviceColors', deviceColors)
       return deviceColors
     },
     getDeviceStorage() {
@@ -622,7 +621,7 @@ export default defineComponent({
         (model: { name: string }) => model.name == selectedModel
       )
       const deviceStorage = selectedModels[0]?.storage
-      console.log('deviceStorage', deviceStorage)
+      // console.log('deviceStorage', deviceStorage)
       return deviceStorage
     },
     getPlanPrice() {
@@ -650,17 +649,25 @@ export default defineComponent({
       const updatedDevices = manufacturers.filter(
         (device: { name: string }) => device.name == manufacturerName
       )
-      // this.mobilePlan.device = updatedDevices[0]
-      return updatedDevices
+      
+      this.deviceModels = updatedDevices
+      this.mobilePlan.device.name = updatedDevices[0]?.name
+      this.deviceModelSelected = ''
+      this.mobilePlan.device.model = ''
     },
     setDeviceModel(model: string) {
       const modelName = model
-      const updatedDeviceModels = this.deviceModels.filter(
+      const deviceModels = this.deviceModels
+      const updatedDeviceModels = this.deviceModels[0]?.models.filter(
         (device: { name: string }) => device.name == modelName
       )
-      this.mobilePlan.device = updatedDeviceModels
-      console.log(updatedDeviceModels)
-      return updatedDeviceModels
+      if (modelName !== updatedDeviceModels[0]?.name) {
+        this.deviceModelSelected = ''
+        this.mobilePlan.device.model = ''
+      } else {
+        this.mobilePlan.device.model = updatedDeviceModels[0]?.name
+        // this.deviceModels = updatedDevices
+      }
     },
     selectedDeviceColor(color: string) {
       this.mobilePlan.device.color.hexcode = color
@@ -709,14 +716,22 @@ export default defineComponent({
     },
     deviceCarrierSelected(carrier: string) {
       this.$emit('onChange', carrier)
-    },
-    getDeviceModelsByManufacturer(devices: []): void {
-      const selectedDeviceName = this.deviceManufacturerSelected
-      const selectedDevice = devices.filter(
-        (device: { name: string }) => device.name == selectedDeviceName
-      )
-      this.mobilePlan.device = selectedDevice
     }
+    // getDeviceModelsByManufacturer(devices: []): void {
+    //   const selectedDeviceName = this.deviceManufacturerSelected
+    //   const selectedDevice = devices.filter(
+    //     (device: { name: string }) => device.name == selectedDeviceName
+    //   )
+    //   this.mobilePlan.device = selectedDevice
+    // },
+    // getDeviceModelsByManufacturer() {
+    //   const selectedManufacturer = this.deviceManufacturerSelected
+    //   const selectedManufacturerDevices = this.deviceOptions.manufacturers.filter(
+    //     (manufacturer: { name: string }) => manufacturer.name == selectedManufacturer
+    //   )
+    //   const selectedManufacturerDeviceModels = selectedManufacturerDevices[0]?.models
+    //   return selectedManufacturerDeviceModels
+    // },
   }
 })
 </script>
