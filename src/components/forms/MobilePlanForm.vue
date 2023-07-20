@@ -96,7 +96,6 @@
                         v-for="manufacturer in getDeviceManufacturers"
                         :key="manufacturer.name"
                         :value="manufacturer.name"
-                        :selected="this.deviceManufacturerSelected"
                       >
                         {{ manufacturer.name }}
                       </option>
@@ -119,7 +118,6 @@
                         v-for="device in getDeviceModelsByManufacturer"
                         :key="device.name"
                         :value="device.name"
-                        :selected="this.deviceModelSelected"
                       >
                         {{ device.name }}
                       </option>
@@ -127,7 +125,7 @@
                   </div>
                 </div>
                 <!-- Device Color -->
-                <div class="device-colors">
+                <div v-if="this.deviceModelSelected" class="device-colors">
                   <div class="legend">Color</div>
                   <div v-for="color in getDeviceColors" :key="color.name" class="input-radio">
                     <label class="mr-2 mb-0" :for="`device-color` + color.name">{{
@@ -242,7 +240,6 @@
                       v-for="carrier in getDeviceCarriers"
                       :key="carrier.name"
                       :value="carrier.name"
-                      :selected="this.deviceCarrierSelected"
                     >
                       {{ carrier.name }}
                     </option>
@@ -652,16 +649,25 @@ export default defineComponent({
       const updatedDevices = manufacturers.filter(
         (device: { name: string }) => device.name == manufacturerName
       )
+      
       this.deviceModels = updatedDevices
       this.mobilePlan.device.name = updatedDevices[0]?.name
-      console.log('updatedManufacturer', updatedDevices)
+      this.deviceModelSelected = ''
+      this.mobilePlan.device.model = ''
     },
     setDeviceModel(model: string) {
       const modelName = model
+      const deviceModels = this.deviceModels
       const updatedDeviceModels = this.deviceModels[0]?.models.filter(
         (device: { name: string }) => device.name == modelName
       )
-      this.mobilePlan.device.model = updatedDeviceModels[0]?.name
+      if (modelName !== updatedDeviceModels[0]?.name) {
+        this.deviceModelSelected = ''
+        this.mobilePlan.device.model = ''
+      } else {
+        this.mobilePlan.device.model = updatedDeviceModels[0]?.name
+        // this.deviceModels = updatedDevices
+      }
     },
     selectedDeviceColor(color: string) {
       this.mobilePlan.device.color.hexcode = color

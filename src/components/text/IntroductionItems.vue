@@ -64,13 +64,19 @@
 
     This was an amazing expereince and chance to showcase what I can do. I plan on finishing the
     following:
-    <ul class="list">
+    <!-- <ul class="list">
       <li v-for="item in toDoListStore" :key="item.description" class="ml-0">
         <span v-if="item.completed" class="icon pr-2">✅</span>
         <span v-else-if="item.completed && item.description" class="icon pr-2">🍍</span>
         <span v-else>☒</span>
         {{ item.description }}
       </li>
+    </ul> -->
+    <ul class="list">
+      <li class="ml-0"><span class="icon pr-2">✅</span>Fix Typescript errors</li>
+      <li class="ml-0"><span class="icon pr-2">🍍</span>Setup data in store</li>
+      <li class="ml-0"><span class="icon pr-2">☒</span>Refactor JS &amp; CSS</li>
+      <li class="ml-0"><span class="icon pr-2">☒</span>Breakout form into components</li>
     </ul>
   </IntroductionItem>
 </template>
@@ -90,9 +96,9 @@ import SupportIcon from '../icons/IconSupport.vue'
 export default defineComponent({
   name: 'IntroductionItems',
   setup() {
-    const toDoListStore = useToDoListStore()    
+    const toDoListStore = useToDoListStore()
     return {
-      toDoListStore: computed(() => toDoListStore.getList),
+      toDoListStore: computed(() => toDoListStore.getList)
     }
   },
   components: {
