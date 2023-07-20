@@ -1,26 +1,3 @@
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-import IntroductionItem from './IntroductionItem.vue'
-import DocumentationIcon from '../icons/IconDocumentation.vue'
-import ToolingIcon from '../icons/IconTooling.vue'
-import EcosystemIcon from '../icons/IconEcosystem.vue'
-import CommunityIcon from '../icons/IconCommunity.vue'
-import SupportIcon from '../icons/IconSupport.vue'
-
-export default defineComponent({
-  name: 'IntroductionItems',
-  components: {
-    IntroductionItem,
-    DocumentationIcon,
-    ToolingIcon,
-    EcosystemIcon,
-    CommunityIcon,
-    SupportIcon
-  }
-})
-</script>
-
 <template>
   <IntroductionItem>
     <template #icon>
@@ -45,8 +22,11 @@ export default defineComponent({
     <a href="https://github.com/johnsoncodehk/volar" target="_blank" rel="noopener">Volar</a>. If
     you need to test your components and web pages, check out
     <a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a> and
-    <a href="https://on.cypress.io/component" target="_blank">Cypress Component Testing</a>.
-    More instructions are available in <a href="https://github.com/ericthayer/mobile-plans#readme/" target="_blank" rel="noopener"><code>README.md</code></a>.
+    <a href="https://on.cypress.io/component" target="_blank">Cypress Component Testing</a>. More
+    instructions are available in
+    <a href="https://github.com/ericthayer/mobile-plans#readme/" target="_blank" rel="noopener"
+      ><code>README.md</code></a
+    >.
   </IntroductionItem>
 
   <IntroductionItem>
@@ -71,7 +51,9 @@ export default defineComponent({
     </template>
     <template #heading>Community</template>
 
-   Please reach out on Discord @ eric.thayer or send me an <a href="mailto:ethayer.design@gmail" target="_blank" rel="noopener">email</a> if you want to chat about this project, my process, or collaborate on something else.
+    Please reach out on Discord @ eric.thayer or send me an
+    <a href="mailto:ethayer.design@gmail" target="_blank" rel="noopener">email</a> if you want to
+    chat about this project, my process, or collaborate on something else.
   </IntroductionItem>
 
   <IntroductionItem>
@@ -80,12 +62,47 @@ export default defineComponent({
     </template>
     <template #heading>Thank You</template>
 
-    This was an amazing expereince and chance to showcase what I can do. I plan on finishing the following:
+    This was an amazing expereince and chance to showcase what I can do. I plan on finishing the
+    following:
     <ul class="list">
-      <li class="ml-0"><span class="icon pr-2">✅</span>Fix Typescript errors</li>
-      <li class="ml-0"><span class="icon pr-2">☒</span>Setup data in store</li>
-      <li class="ml-0"><span class="icon pr-2">☒</span>Refactor JS & CSS</li>
+      <li v-for="item in toDoListStore" :key="item.description" class="ml-0">
+        <span v-if="item.completed" class="icon pr-2">✅</span>
+        <span v-else-if="item.completed && item.description" class="icon pr-2">🍍</span>
+        <span v-else>☒</span>
+        {{ item.description }}
+      </li>
     </ul>
   </IntroductionItem>
 </template>
+
+<script lang="ts">
+import { defineComponent, computed } from 'vue'
+
+import IntroductionItem from './IntroductionItem.vue'
+import useToDoListStore from '../../stores/ToDoList'
+
+import DocumentationIcon from '../icons/IconDocumentation.vue'
+import ToolingIcon from '../icons/IconTooling.vue'
+import EcosystemIcon from '../icons/IconEcosystem.vue'
+import CommunityIcon from '../icons/IconCommunity.vue'
+import SupportIcon from '../icons/IconSupport.vue'
+
+export default defineComponent({
+  name: 'IntroductionItems',
+  setup() {
+    const toDoListStore = useToDoListStore()    
+    return {
+      toDoListStore: computed(() => toDoListStore.getList),
+    }
+  },
+  components: {
+    IntroductionItem,
+    DocumentationIcon,
+    ToolingIcon,
+    EcosystemIcon,
+    CommunityIcon,
+    SupportIcon
+  }
+})
+</script>
 
