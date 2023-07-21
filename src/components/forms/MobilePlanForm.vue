@@ -124,7 +124,7 @@
                   </div>
                 </div>
                 <!-- Device Color -->
-                <div v-if="this.deviceManufacturerSelected" class="device-colors">
+                <div class="device-colors">
                   <div class="legend">Color</div>
                   <div v-for="color in getDeviceColors" :key="color.name" class="input-radio">
                     <label class="mr-2 mb-0" :for="`device-color` + color.name">{{
@@ -142,7 +142,7 @@
                 </div>
               </div>
               <!-- Storage -->
-              <div v-if="this.deviceManufacturerSelected" class="flex justify-between gap-10 mb-8">
+              <div class="flex justify-between gap-10 mb-8">
                 <div class="plan-storage grow">
                   <div class="legend">Storage</div>
                   <div class="grid grid-cols-2 gap-1 pt-1 pr-4">
@@ -367,8 +367,8 @@ export default defineComponent({
       mobilePlan: {},
       newPlan: {
         created: Date().toString(),
-        name: 'New Line',
-        planOption: 'Basic',
+        name: '',
+        planOption: '',
         price: 0,
         device: {
           name: '',
@@ -590,10 +590,13 @@ export default defineComponent({
 
       if (plans.length === 0) {
         const plan = this.newPlan
+        
+        plan.name = 'New Phone Line'
 
         this.mobilePlan = plan
 
         plans.push(plan)
+        
         return plans
       } else return plans
     },
