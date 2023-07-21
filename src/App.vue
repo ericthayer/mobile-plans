@@ -18,10 +18,10 @@
     <div class="app-actions">
       <a
         class="tag-version"
-        href="https://github.com/ericthayer/mobile-plans/"
+        href="https://github.com/ericthayer/mobile-plans/tags"
         target="_blank"
         rel="noopener"
-        >0.1.0</a
+        >0.3.1</a
       >
     </div>
   </div>
