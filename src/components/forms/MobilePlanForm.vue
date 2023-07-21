@@ -68,7 +68,6 @@
                     name="planOptions"
                     class="ml-4"
                     type="radio"
-                    :checked="option.name === 'Basic'"
                     @click="selectPlanOption(option)"
                   />
                   <label class="ml-1 mb-0" :for="`planOption` + option.name">{{
@@ -125,7 +124,7 @@
                   </div>
                 </div>
                 <!-- Device Color -->
-                <div v-if="this.deviceModelSelected" class="device-colors">
+                <div class="device-colors">
                   <div class="legend">Color</div>
                   <div v-for="color in getDeviceColors" :key="color.name" class="input-radio">
                     <label class="mr-2 mb-0" :for="`device-color` + color.name">{{
@@ -137,13 +136,13 @@
                       class="color-icon"
                       type="radio"
                       :style="{ background: color.hexcode }"
-                      @change="selectedDeviceColor(color.hexcode)"
+                      @change="setDeviceColor(color)"
                     />
                   </div>
                 </div>
               </div>
+              <!-- Storage -->
               <div class="flex justify-between gap-10 mb-8">
-                <!-- Storage -->
                 <div class="plan-storage grow">
                   <div class="legend">Storage</div>
                   <div class="grid grid-cols-2 gap-1 pt-1 pr-4">
@@ -201,7 +200,7 @@
                       name="protection-plan"
                       class="mr-1"
                       type="radio"
-                      @change=""
+                      @change="setProtectionPlan(true)"
                     />
                     <label class="ml-1 mb-0" for="add-protection-plan">Add Protection Plan</label>
                   </div>
@@ -211,7 +210,7 @@
                       name="protection-plan"
                       class="mr-1"
                       type="radio"
-                      @change=""
+                      @change="setProtectionPlan(false)"
                     />
                     <label class="ml-2 mb-0" for="decline-protection-plan"
                       >Decline Protection Plan</label
@@ -234,7 +233,7 @@
                     class=""
                     title="Select Carrier"
                     required
-                    @input="setDeviceCarrier(this.deviceCarrierSelected)"
+                    @change="setDeviceCarrier(this.deviceCarrierSelected)"
                   >
                     <option
                       v-for="carrier in getDeviceCarriers"
@@ -368,9 +367,9 @@ export default defineComponent({
       mobilePlan: {},
       newPlan: {
         created: Date().toString(),
-        name: 'New Line',
-        planOption: 'Basic',
-        price: (39.99).toFixed(2),
+        name: '',
+        planOption: '',
+        price: 0,
         device: {
           name: '',
           model: '',
@@ -378,10 +377,13 @@ export default defineComponent({
             name: '',
             hexcode: ''
           },
-          storage: ''
+          storage: {
+            size: '',
+            cost: 0
+          }
         },
-        protectionPlans: {
-          cost: '',
+        protectionPlan: {
+          cost: 0,
           description: ''
         },
         tradeInOptions: {
@@ -532,8 +534,8 @@ export default defineComponent({
       },
       protectionPlans: [
         {
-          description: 'This is the protection plan description',
-          cost: 5.0
+          cost: 5.0,
+          description: 'This is the protection plan description'
         }
       ],
       tradeInOptions: {
@@ -574,7 +576,8 @@ export default defineComponent({
       deviceModelSelected: '',
       deviceCarrierSelected: '',
       IMEI: '',
-      deviceModels: []
+      deviceModels: [],
+      deviceColors: []
     }
   },
   mounted() {
@@ -587,10 +590,13 @@ export default defineComponent({
 
       if (plans.length === 0) {
         const plan = this.newPlan
+        
+        plan.name = 'New Phone Line'
 
         this.mobilePlan = plan
 
         plans.push(plan)
+        
         return plans
       } else return plans
     },
@@ -612,7 +618,6 @@ export default defineComponent({
         (model: { name: string }) => model.name == selectedModel
       )
       const deviceColors = selectedModels[0]?.colors
-      // console.log('deviceColors', deviceColors)
       return deviceColors
     },
     getDeviceStorage() {
@@ -621,12 +626,11 @@ export default defineComponent({
         (model: { name: string }) => model.name == selectedModel
       )
       const deviceStorage = selectedModels[0]?.storage
-      // console.log('deviceStorage', deviceStorage)
       return deviceStorage
     },
     getPlanPrice() {
-      const plans = this.mobilePlans.filter((plan: { editing: boolean }) => plan.editing == true)
-      return plans[0]?.price
+      // const plans = this.mobilePlans.filter((plan: { editing: boolean }) => plan.editing == true)
+      return this.mobilePlan.price
     },
     getDeviceCarriers() {
       const carriers = this.tradeInOptions?.carriers
@@ -640,7 +644,7 @@ export default defineComponent({
     selectPlanOption(optionPlan: { name: string; cost: number }) {
       const plans = this.mobilePlans
       const updatedPlans = plans.filter((plan: { editing: boolean }) => plan.editing == true)
-      updatedPlans[0].price = optionPlan.cost
+      updatedPlans[0].price = optionPlan.cost + this.mobilePlan.protectionPlan.cost
       this.mobilePlan.planOption = optionPlan.name
     },
     setDeviceManufacturer(manufacturer: string) {
@@ -649,28 +653,24 @@ export default defineComponent({
       const updatedDevices = manufacturers.filter(
         (device: { name: string }) => device.name == manufacturerName
       )
-      
       this.deviceModels = updatedDevices
+      this.deviceColors = updatedDevices[0]?.models[0]?.colors
       this.mobilePlan.device.name = updatedDevices[0]?.name
-      this.deviceModelSelected = ''
       this.mobilePlan.device.model = ''
+      this.mobilePlan.device.color.name = ''
+      this.mobilePlan.device.color.hexcode = ''
+      this.deviceModelSelected = ''
     },
     setDeviceModel(model: string) {
       const modelName = model
-      const deviceModels = this.deviceModels
       const updatedDeviceModels = this.deviceModels[0]?.models.filter(
         (device: { name: string }) => device.name == modelName
       )
-      if (modelName !== updatedDeviceModels[0]?.name) {
-        this.deviceModelSelected = ''
-        this.mobilePlan.device.model = ''
-      } else {
-        this.mobilePlan.device.model = updatedDeviceModels[0]?.name
-        // this.deviceModels = updatedDevices
-      }
+      this.mobilePlan.device.model = updatedDeviceModels[0]?.name
     },
-    selectedDeviceColor(color: string) {
-      this.mobilePlan.device.color.hexcode = color
+    setDeviceColor(color: { name: string, hexcode: string }) {
+      this.mobilePlan.device.color.name = color.name
+      this.mobilePlan.device.color.hexcode = color.hexcode
     },
     showHelpText() {
       this.dialog = !this.dialog
@@ -683,7 +683,6 @@ export default defineComponent({
         (carrier: { name: string }) => carrier.name === carrierName
       )
       this.mobilePlan.tradeInOptions.carrier = carrierName
-      return carrierName
     },
     setAnswer(answer: boolean) {
       if (answer) {
@@ -691,6 +690,26 @@ export default defineComponent({
       } else {
         this.dynamicQuestionLabel = '-answer-no'
       }
+    },
+    setProtectionPlan(answer: boolean) {
+      const planCost = this.protectionPlans[0].cost
+      const planPrice = this.mobilePlan.price
+      if (answer) {
+        console.log("planCost", planCost, planPrice)
+        this.mobilePlan.protectionPlan = this.protectionPlans[0]
+        this.mobilePlan.price = planPrice + planCost
+      } else {
+        this.mobilePlan.protectionPlan = {
+          size: '',
+          cost: 0
+        }
+        if (this.mobilePlan.price !== 0) {
+          this.mobilePlan.price = this.mobilePlan.price - planCost          
+        }
+      }
+    },
+    setPlanCost() {
+      
     },
     addMobilePlan() {
       const plans = this.mobilePlans
@@ -716,22 +735,12 @@ export default defineComponent({
     },
     deviceCarrierSelected(carrier: string) {
       this.$emit('onChange', carrier)
+    },
+    getDeviceModelsByManufacturer(models: [{ name: string, colors: [], storage: [] }]) {
+      const modelColors = models[0].colors
+      console.log("modeColors", modelColors)
+      this.deviceColors = modelColors
     }
-    // getDeviceModelsByManufacturer(devices: []): void {
-    //   const selectedDeviceName = this.deviceManufacturerSelected
-    //   const selectedDevice = devices.filter(
-    //     (device: { name: string }) => device.name == selectedDeviceName
-    //   )
-    //   this.mobilePlan.device = selectedDevice
-    // },
-    // getDeviceModelsByManufacturer() {
-    //   const selectedManufacturer = this.deviceManufacturerSelected
-    //   const selectedManufacturerDevices = this.deviceOptions.manufacturers.filter(
-    //     (manufacturer: { name: string }) => manufacturer.name == selectedManufacturer
-    //   )
-    //   const selectedManufacturerDeviceModels = selectedManufacturerDevices[0]?.models
-    //   return selectedManufacturerDeviceModels
-    // },
   }
 })
 </script>

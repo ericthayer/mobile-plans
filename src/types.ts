@@ -9,7 +9,7 @@ export interface AppData {
     created: string,
     name: string,
     planOption: string,
-    price: string,
+    price: number,
     device: {
       name: string,
       model: string,
@@ -17,11 +17,14 @@ export interface AppData {
         name: string,
         hexcode: string
       },
-      storage: string
+      storage: {
+        size: string,
+        cost: number
+      }
     },
-    protectionPlans: {
+    protectionPlan: {
       description: string,
-      cost: string
+      cost: number
     },
     tradeInOptions: {
       carrier: string,
@@ -214,6 +217,7 @@ export interface AppData {
   deviceCarrierSelected?: string
   IMEI?: string
   deviceModels?: []
+  deviceColors?: []
 }
 export interface events {
   setDeviceManufacturer: ($event: {}) => void

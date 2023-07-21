@@ -17,7 +17,6 @@ export default defineComponent({
     }
   },
   setup() {
-    // const platformStore = usePlatformStore()
     return {
     }
   },
@@ -26,7 +25,7 @@ export default defineComponent({
   },
   methods: {
     setDeviceManufacturer(deviceManufacturer: string) {
-      console.log("deviceManufacturer", deviceManufacturer)
+      // console.log("deviceManufacturer", deviceManufacturer)
     }
   },
 })
