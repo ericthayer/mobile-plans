@@ -1,40 +1,42 @@
-// import { ToDoList } from './../types';
 import { defineStore } from 'pinia'
 import { type ToDoList } from '../types'
 
-const useToDoListStore = defineStore('toDoListStore', {
+const useToDoListStore = defineStore('ToDoListStore', {
   state: () => ({
     toDoList: [] as ToDoList[]
   }),
   actions: {
-    setList() {
-      const list = [
-        {
-          description: 'Fix TypeScript errors',
-          completed: true
-        },
-        {
-          description: 'Fix TypeScript errors',
-          completed: false
-        },
-        {
-          description: 'Fix TypeScript errors',
-          completed: false
-        },
-        {
-          description: 'Fix TypeScript errors',
-          completed: false
-        }
-      ] 
-      this.toDoList = list
+    setList(items: [{ description: string, completed: boolean }]) {
+      this.toDoList = items
     }
   },
   getters: {
     getList: (state) => {
-      const list = state.toDoList
-      return list
+      if(state.toDoList.length == 0) {
+        const list = [
+          {
+            description: 'list item',
+            completed: false
+          },
+          {
+            description: 'list item',
+            completed: false
+          },
+          {
+            description: 'list item',
+            completed: false
+          },
+          {
+            description: 'list item',
+            completed: false
+          }
+        ]
+        return list as [{ description: string, completed: boolean }]
+      } else {
+        return state.toDoList as []
+      }
     }
-  },
+  }
 })
 
 export default useToDoListStore

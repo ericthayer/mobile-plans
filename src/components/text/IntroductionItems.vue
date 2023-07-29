@@ -64,29 +64,30 @@
 
     This was an amazing expereince and chance to showcase what I can do. I plan on finishing the
     following:
-    <!-- <ul class="list">
+    <button type="button" @click="setToDoList()">get list</button>
+    <ul class="list">
       <li v-for="item in toDoListStore" :key="item.description" class="ml-0">
         <span v-if="item.completed" class="icon pr-2">✅</span>
-        <span v-else-if="item.completed && item.description" class="icon pr-2">🍍</span>
+        <span v-if="item.completed && item.description == 'Setup data in store'" class="icon pr-2">🍍</span>
         <span v-else>☒</span>
         {{ item.description }}
       </li>
-    </ul> -->
-    <ul class="list">
+    </ul>
+    <!-- <ul class="list">
       <li class="ml-0"><span class="icon pr-2">✅</span>Fix Typescript errors</li>
       <li class="ml-0"><span class="icon pr-2">🍍</span>Setup data in store</li>
       <li class="ml-0"><span class="icon pr-2">☒</span>Refactor JS &amp; CSS</li>
       <li class="ml-0"><span class="icon pr-2">☒</span>Breakout form into components</li>
-    </ul>
+    </ul> -->
   </IntroductionItem>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 
-import IntroductionItem from './IntroductionItem.vue'
 import useToDoListStore from '../../stores/ToDoList'
 
+import IntroductionItem from './IntroductionItem.vue'
 import DocumentationIcon from '../icons/IconDocumentation.vue'
 import ToolingIcon from '../icons/IconTooling.vue'
 import EcosystemIcon from '../icons/IconEcosystem.vue'
@@ -108,6 +109,32 @@ export default defineComponent({
     EcosystemIcon,
     CommunityIcon,
     SupportIcon
+  },
+  methods: {
+    setToDoList() {
+      const toDoList = [
+        {
+          description: 'Fix TypeScript errors',
+          completed: true
+        },
+        {
+          description: 'Setup data in store',
+          completed: true
+        },
+        {
+          description: 'Refactor JS/CSS',
+          completed: false
+        },
+        {
+          description: 'Breakout form into components',
+          completed: false
+        }
+      ]
+      useToDoListStore().setList(toDoList as [{ description: string, completed: boolean }])
+    }
+  },
+  mounted() {
+    // this.setToDoList()
   }
 })
 </script>
